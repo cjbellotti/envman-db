@@ -1,0 +1,14 @@
+[
+	{
+		"PAIS" : "PE",
+		"ID" : 2,
+		"NOMBRE" : "MR23",
+		"DESCRIPCION" : "IBS MR23"
+	},
+	{
+		"PAIS" : "CL",
+		"ID" : 1,
+		"NOMBRE" : "MR23",
+		"DESCRIPCION" : "IBS MR23"
+	}
+]
