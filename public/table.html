@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>TestTable</title>
+	<script src="libs/jquery/dist/jquery.min.js"></script>
+	<script src="libs/underscore/underscore-min.js"></script>
+	<script src="libs/backbone/backbone.js"></script>
+	<script src="libs/swig.js"></script>
+	<script src="libs/bootstrap/dist/js/bootstrap.min.js"></script>
+
+	<style>
+
+		.table {
+			width: 100%;
+			border : 1px solid gray;
+			border-radius: 3px;
+		}
+
+		.table-header {
+			width : 100%;
+		}
+
+		.table-header table {
+			width : 97.5%;
+			border-collapse: collapse;
+		}
+
+		.table-body {
+			width: 100%;
+			overflow-y : scroll;
+			height : 200px;
+		}
+
+		.table-body table {
+			width : 100%;
+			border-collapse: collapse;
+			position: relative;
+		}
+
+		.cell-header {
+			width : 24%;
+			border : 1px solid gray;
+			padding : 0px;
+			margin : 0px;
+		}
+		.cell-body {
+			width : 24%;
+			border : 1px solid gray;
+			padding : 0px;
+			margin : 0px;
+		}
+	</style>
+</head>
+<body>
+	<div style="margin: 0 auto; text-align: center; width : 50%">
+		<div class="table">
+			<div class="table-header">
+				<table>
+					<thead>
+						<tr>					
+							<th class="cell-header">SISTEMA</th>
+							<th class="cell-header">ENTIDAD</th>
+							<th class="cell-header">VALOR CANONICO</th>
+							<th class="cell-header">VALOR SISTEMA</th>
+						</tr>
+					</thead>
+				</table>
+			</div>
+			<div class="table-body">
+				<table>
+					<tbody>
+						<tr>
+							<td class="cell-body">MR32</td>
+							<td class="cell-body">E1</td>
+							<td class="cell-body">AA</td>
+							<td class="cell-body">XX</td>
+						</tr>
+						<tr>
+							<td class="cell-body">MR32</td>
+							<td class="cell-body">E1</td>
+							<td class="cell-body">AA</td>
+							<td class="cell-body">XX</td>
+						</tr>
+						<tr>
+							<td class="cell-body">MR32</td>
+							<td class="cell-body">E1</td>
+							<td class="cell-body">AA</td>
+							<td class="cell-body">XX</td>
+						</tr>
+						<tr>
+							<td class="cell-body">MR32</td>
+							<td class="cell-body">E1</td>
+							<td class="cell-body">AA</td>
+							<td class="cell-body">XX</td>
+						</tr>
+						<tr>
+							<td class="cell-body">MR32</td>
+							<td class="cell-body">E1</td>
+							<td class="cell-body">AA</td>
+							<td class="cell-body">XX</td>
+						</tr>
+						<tr>
+							<td class="cell-body">MR32</td>
+							<td class="cell-body">E1</td>
+							<td class="cell-body">AA</td>
+							<td class="cell-body">XX</td>
+						</tr>
+						<tr>
+							<td class="cell-body">MR32</td>
+							<td class="cell-body">E1</td>
+							<td class="cell-body">AA</td>
+							<td class="cell-body">XX</td>
+						</tr>
+						<tr>
+							<td class="cell-body">MR32</td>
+							<td class="cell-body">E1</td>
+							<td class="cell-body">AA</td>
+							<td class="cell-body">XX</td>
+						</tr>
+						<tr>
+							<td class="cell-body">MR32</td>
+							<td class="cell-body">E1</td>
+							<td class="cell-body">AA</td>
+							<td class="cell-body">XX</td>
+						</tr>
+						<tr>
+							<td class="cell-body">MR32</td>
+							<td class="cell-body">E1</td>
+							<td class="cell-body">AA</td>
+							<td class="cell-body">XX</td>
+						</tr>
+						<tr>
+							<td class="cell-body">MR32</td>
+							<td class="cell-body">E1</td>
+							<td class="cell-body">AA</td>
+							<td class="cell-body">XX</td>
+						</tr>
+						<tr>
+							<td class="cell-body">MR32</td>
+							<td class="cell-body">E1</td>
+							<td class="cell-body">AA</td>
+							<td class="cell-body">XX</td>
+						</tr>
+						<tr>
+							<td class="cell-body">MR32</td>
+							<td class="cell-body">E1</td>
+							<td class="cell-body">AA</td>
+							<td class="cell-body">XX</td>
+						</tr>
+						<tr>
+							<td class="cell-body">MR32</td>
+							<td class="cell-body">E1</td>
+							<td class="cell-body">AA</td>
+							<td class="cell-body">XX</td>
+						</tr>
+						<tr>
+							<td class="cell-body">MR32</td>
+							<td class="cell-body">E1</td>
+							<td class="cell-body">AA</td>
+							<td class="cell-body">XX</td>
+						</tr>
+						<tr>
+							<td class="cell-body">MR32</td>
+							<td class="cell-body">E1</td>
+							<td class="cell-body">AA</td>
+							<td class="cell-body">XX</td>
+						</tr>
+						<tr>
+							<td class="cell-body">MR32</td>
+							<td class="cell-body">E1</td>
+							<td class="cell-body">AA</td>
+							<td class="cell-body">XX</td>
+						</tr>
+						<tr>
+							<td class="cell-body">MR32</td>
+							<td class="cell-body">E1</td>
+							<td class="cell-body">AA</td>
+							<td class="cell-body">XX</td>
+						</tr>
+						<tr>
+							<td class="cell-body">MR32</td>
+							<td class="cell-body">E1</td>
+							<td class="cell-body">AA</td>
+							<td class="cell-body">XX</td>
+						</tr>
+						<tr>
+							<td class="cell-body">MR32</td>
+							<td class="cell-body">E1</td>
+							<td class="cell-body">AA</td>
+							<td class="cell-body">XX</td>
+						</tr>
+						<tr>
+							<td class="cell-body">MR32</td>
+							<td class="cell-body">E1</td>
+							<td class="cell-body">AA</td>
+							<td class="cell-body">XX</td>
+						</tr>
+						<tr>
+							<td class="cell-body">MR32</td>
+							<td class="cell-body">E1</td>
+							<td class="cell-body">AA</td>
+							<td class="cell-body">XX</td>
+						</tr>
+						<tr>
+							<td class="cell-body">MR32</td>
+							<td class="cell-body">E1</td>
+							<td class="cell-body">AA</td>
+							<td class="cell-body">XX</td>
+						</tr>
+						<tr>
+							<td class="cell-body">MR32</td>
+							<td class="cell-body">E1</td>
+							<td class="cell-body">AA</td>
+							<td class="cell-body">XX</td>
+						</tr>
+						<tr>
+							<td class="cell-body">MR32</td>
+							<td class="cell-body">E1</td>
+							<td class="cell-body">AA</td>
+							<td class="cell-body">XX</td>
+						</tr>
+						<tr>
+							<td class="cell-body">MR32</td>
+							<td class="cell-body">E1</td>
+							<td class="cell-body">AA</td>
+							<td class="cell-body">XX</td>
+						</tr>
+						<tr>
+							<td class="cell-body">MR32</td>
+							<td class="cell-body">E1</td>
+							<td class="cell-body">AA</td>
+							<td class="cell-body">XX</td>
+						</tr>
+						<tr>
+							<td class="cell-body">MR32</td>
+							<td class="cell-body">E1</td>
+							<td class="cell-body">AA</td>
+							<td class="cell-body">XX</td>
+						</tr>
+						<tr>
+							<td class="cell-body">MR32</td>
+							<td class="cell-body">E1</td>
+							<td class="cell-body">AA</td>
+							<td class="cell-body">XX</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

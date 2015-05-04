@@ -1,39 +1,46 @@
-EnvMan.Views.JobsTable = Backbone.View.extend({
+EnvMan.Views.JobTable = Backbone.View.extend({
 
 	tagName : 'div',
 	className : 'jobs-table table-responsive',
 
-	jobTableTemplate : swig.compile( $('#jobs-table-template').html() ),
+	initialize : function (config) {
 
-	jobTableItemTemplate : swig.compile( $('#jobs-table-item-template').html() ),
+		this.jobTableTemplate = swig.compile( $('#jobs-table-template').html() );
 
-	initialize : function (jobCollections) {
+		var configTable = {};
+		configTable.headers = config.headers;
 
-		this.jobs = jobCollections;
+		configTable.selectable = true;
+		this.table = MyTable(configTable);
+		this.table.setHeight(150);
 
-		this.jobs.on('add', this.render, this);
-		this.jobs.on('reset', this.render, this);
+		this.onAgregar = config.onAgregar || function() {console.log("No implementado.")};
+		this.onModificar = config.onModificar || function() {console.log("No implementado.")};
+		this.onEliminar = config.onEliminar || function() {console.log("No implementado.")};
+		this.onImportar = config.onImportar || function() {console.log("No implementado.")};
 
-		this.$el.html( this.jobTableTemplate() );		
+		this.arrayData = config.arrayData;
 
 	},
+
+	events : {
+
+		"click #btn-agregar" : "onAgregar",
+		"click #btn-modificar" : "onModificar",
+		"click #btn-eliminar" : "onEliminar",
+		"click #btn-importar" : "onImportar"
+
+	}
 
 	render : function () {
 
-		this.$el.html( this.jobTableTemplate() );
-		var self = this;
-		this.jobs.each(function (job) {
+		this.$el.html(this.jobTableTemplate());
+		this.$el.find('table-container').append(this.table);
 
-			self.$el.find('.table-body').append( self.jobTableItemTemplate(job.toJSON()));
+		this.table.reset();
 
-		});
+		this.table.setArrayData(this.arrayData);
 
 	},
-
-	renderJob: function (model) {
-
-		this.$el.find('.table-body').append( self.jobTableItemTemplate(job.toJSON()));		
-
-	}
 
 });

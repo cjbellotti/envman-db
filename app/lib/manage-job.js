@@ -75,13 +75,42 @@ functions.addJob = function (jobData) {
 
 	var lastJob = _.last(data) || { job : 0 };
 
-	var id = ++lastJob.job;
+	var id = lastJob.job + 1;
 
+	jobData.target = 'DESA';
 	jobData.job = id;
 
 	data.push(jobData);
 
 	return jobData;
+
+}
+
+functions.updateJob = function (nJob, jobData) {
+
+	var ret = null;
+
+	var index = _.findIndex(data, { job : parseInt(nJob) });
+
+	if (index >= 0) {
+		ret = jobData;
+		data[index] = jobData;
+	}
+
+	return ret;
+
+}
+
+functions.removeJob = function (nJob) {
+
+	var ret = null;
+
+	var index = _.findIndex(data, { job : parseInt(nJob) });
+
+	if (index >= 0)
+		data = _.without(data, data[index]);
+
+	return ret;
 
 }
 
@@ -99,7 +128,7 @@ functions.addRegistrosTojob = function (nJob, tabla, reg) {
 			job.registros[tabla] = [];
 
 		var lastReg = _.last(job.registros[tabla]) || { ID : 0 };
-		var lastRegIndex = ++lastReg.ID;
+		var lastRegIndex = lastReg.ID + 1;
 
 		if (!reg.ID || reg.ID == 0)
 			reg.ID = lastRegIndex;
@@ -116,11 +145,11 @@ functions.addRegistrosTojob = function (nJob, tabla, reg) {
 
 }
 
-functions.removeRegistrosFromjob = function (nJob, tabla, id) {
+functions.updateRegistroFromJob = function (nJob, tabla, id, reg) {
 
 	var ret = null;
 
-	var index = _.findIndex(data, { job : nJob });
+	var index = _.findIndex(data, { job : parseInt(nJob) });
 
 	if (index >= 0) {
 
@@ -134,7 +163,45 @@ functions.removeRegistrosFromjob = function (nJob, tabla, id) {
 		var match = false;
 		for (var i = 0; i < tab.length && !match; i++) {
 
-			if (tab[i].id == id) {
+			if (tab[i].ID == id) {
+
+				match = true;
+				tab[i] = reg;
+				job.registros[tabla] = tab;
+				data[index] = job;
+
+			}
+
+		}
+
+		if (match)
+			ret = {};
+
+	}
+
+	return ret;
+
+}
+
+functions.removeRegistrosFromjob = function (nJob, tabla, id) {
+
+	var ret = null;
+
+	var index = _.findIndex(data, { job : parseInt(nJob) });
+
+	if (index >= 0) {
+
+		var job = data[index];
+
+		if (!job.registros[tabla])
+			job.registros[tabla] = [];
+
+		var tab = job.registros[tabla];
+
+		var match = false;
+		for (var i = 0; i < tab.length && !match; i++) {
+
+			if (tab[i].ID == id) {
 
 				match = true;
 				tab = _.without(tab, tab[i]);

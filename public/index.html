@@ -4,10 +4,65 @@
 	<meta charset="UTF-8">
 	<title>Environment Manager</title>
 	<link rel="stylesheet" href="libs/bootstrap/dist/css/bootstrap.min.css">
+
+	<style>
+		.dvm-table {
+			width : 100%;
+			margin : 0 auto;
+		}
+		.botones {
+			float : right;
+			width: 7%;
+			margin: 3px;
+			padding : 2px;
+		}
+		.table-container {
+			display : inline-block;
+			width : 92%;
+			height : 250px;
+			margin : 0px;
+			padding : 3px;
+
+		}
+		.btn-botonera {
+			margin : 2px;
+		}
+
+		.tab-content {
+			width : 100%;
+		}
+
+		.seccion-left {
+			float : left;
+		}
+
+		.seccion-right {
+			float : right;
+		}
+
+		.jobs-table {
+
+			height : 180px;
+			overflow: hidden;
+		}
+
+ 	</style>
+	
 </head>
 <body>
 	<section id="main">
-		
+		<div class="dvm-table">
+			<div class="table-container">
+			</div>
+			<div class="botones" style="height: 250px">
+				<div>
+					<a id="j-dvms-button-agregar" data-toggle="modal" href="#valorSistemaScr" class="btn btn-success glyphicon glyphicon-plus btn-botonera" data-toggle="tooltip" data-placement="right" title="Agregar"></a>
+					<a id="j-dvms-button-modificar" class="btn btn-primary glyphicon glyphicon-pencil btn-botonera" data-toggle="tooltip" data-placement="right" title="Modificar"></a>
+					<button id="j-dvms-button-quitar" class="btn btn-danger glyphicon glyphicon-trash btn-botonera" data-toggle="tooltip" data-placement="right" title="Quitar"></button>
+					<a id="j-dvms-button-importar-dvm" href="#entidadesScr" class="btn btn-primary glyphicon glyphicon-arrow-left btn-botonera" data-toggle="modal" data-toggle="tooltip" data-placement="right" title="Importar DVM existente"></a>
+				</div>
+			</div>
+		<div>
 	</section>
 
 	<section id="modals">
@@ -19,472 +74,325 @@
 	<script src="libs/backbone/backbone.js"></script>
 	<script src="libs/swig.js"></script>
 	<script src="libs/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script src="libs/mytable.js"></script>
+
+	<script>
+		$(function() {
+			var view = new EnvMan.Views.Job();
+			$('#main').html(view.el);
+			view.render(window.job);
+			$('#jobScr').modal('show');
+			view.mostrarTablaSistemas()
+		});
+	</script>
 
 	<!-- Inicializacion -->
 	<script src="js/init.js"></script>
 
 	<!-- Modelos : Aqui se importan los modelos -->
-	<script src="/js/models/job.js"></script>
+	<script src="js/models/job.js"></script>
+	<script src="js/models/sistema.js"></script>
+	<script src="js/models/entidad.js"></script>
+	<script src="js/models/valor-canonico.js"></script>
+	<script src="js/models/valor-sistema.js"></script>
 
 	<!-- Collections : Aqui se importan las colecciones -->
-	<script src="/js/collections/jobs.js"></script>
+	<script src="js/collections/jobs.js"></script>
+	<script src="js/collections/sistemas.js"></script>
+	<script src="js/collections/entidades.js"></script>
+	<script src="js/collections/valores-canonicos.js"></script>
+	<script src="js/collections/valores-sistema.js"></script>
 
 	<!-- Vistas : Aqui se importan las vistas -->
-	<script src="/js/views/menu.js"></script>
-	<!--<script src="/js/views/jobstable.js"></script>
-	<script src="/js/views/dropdown-button.js"></script>
-	<script src="/js/views/phasebar.js"></script>
-	<script src="/js/views/main.js"></script>
-	<!--                                            -->
-	<!--<script src="/js/views/vista-index.js"></script>
-	<script src="/js/views/vista-entidad.js"></script>
-	<script src="/js/views/vista-paises.js"></script>
-	<script src="/js/views/vista-entidades.js"></script>
-	<script src="/js/views/vista-valor-entidad.js"></script>
-	<script src="/js/views/vista-valor-sistema.js"></script>
-	<script src="/js/views/vista-valores-xentidad.js"></script>
-	<script src="/js/views/vista-valores-pais.js"></script>
+	<script src="js/views/sistema.js"></script>
+	<script src="js/views/entidad.js"></script>
+	<script src="js/views/valor-canonico.js"></script>
+	<script src="js/views/valor-sistema.js"></script>
+	<script src="js/views/vista-job.js"></script>
+	<script src="js/views/vista-job-table.js"></script>
 
-	<!-- Ejecucion de codigo onReady -->
-	<!--<script src="js/main.js"></script>-->
+	<!-- Preparacion -->
+	<script src="js/main.js"></script>
 
-	<!-- Aqui van a los templates -->
-	<script type="text/template" id="botonera">
-		<div class="container">
-			<a data-toggle="modal" class="btn btn-primary" id="mostrarPaises">Pais</a>
-			<a data-toggle="modal" class="btn btn-primary" id="mostrarEntidad">Entidad</a>
-			<a data-toggle="modal" class="btn btn-primary" id="mostrarEntidades">Entidades</a>
-			<a data-toggle="modal" class="btn btn-primary" id="mostrarValorEntidad">Valor Entidad</a>
-			<a data-toggle="modal" class="btn btn-primary" id="mostrarValorSistema">Valor Sistema</a>
-			<a data-toggle="modal" class="btn btn-primary" id="mostrarTest">Test</a>
-			<a data-toggle="modal" class="btn btn-primary" id="mostrarValoresXEntidad">Valores x Entidad</a>
-			<a data-toggle="modal" class="btn btn-primary" id="mostrarValorPais">Valores Pais</a>
-			<a data-toggle="modal" class="btn btn-primary" id="mostrarVentanaJob">Job</a>
-		</div>
-	</script>
+	<script type="text/template" id="sistema-screen-template">
 
-	<script type="text/template" id="paises-window-template">
-
-	<div class="modal fade" id="paisScr" aria-hidden="true" style="z-index: 1062">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h1>Paises</h1>		
-				</div>
-				<div class="modal-body">
-					<form action="" class="form-horizontal" role="form">
-						<div class="form-group">
-							<label for="nombre" class="col-lg-2 control-label">Nombre</label>
-							<div class="col-lg-10"><input type="text" class="form-control" id="nombre" name="nombre"></div>
-						</div>
-						<div class="form-group">
-							<label for="descripcion" class="col-lg-2 control-label">Descripcion</label>
-							<div class="col-lg-10">
-								<textarea class="form-control" id="descripcion" name="descripcion"></textarea>
+		<div class="modal fade" id="sistema-screen" aria-hidden="true" style="z-index: 1062">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h1>Sistema</h1>		
+					</div>
+					<div class="modal-body">
+						<form action="" class="form-horizontal" role="form">
+							<div class="form-group">
+								<label for="nombre" class="col-lg-2 control-label">Nombre</label>
+								<div class="col-lg-10"><input type="text" class="form-control" id="nombre" name="nombre" value="{{ NOMBRE }}"></div>
 							</div>
-						</div>
-					</form>
-				</div>
-				<div class="modal-footer">
-					<button id="p-aceptar" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
-					<button id="p-cancelar" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+							<div class="form-group">
+								<label for="descripcion" class="col-lg-2 control-label">Descripcion</label>
+								<div class="col-lg-10">
+									<textarea class="form-control" id="descripcion" name="descripcion">{{ DESCRIPCION }}</textarea>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="pais" class="col-lg-2 control-label">Pais</label>
+								<div class="col-lg-10">
+									<input type = "text" class="form-control" id="pais" name="pais" value="{{ PAIS }}"></input>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button id="aceptar" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
+						<button id="cancelar" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
+
+	</script>
+
+	<script type="text/template" id="entidad-screen-template">
+
+		<div class="modal fade" id="entidad-screen" aria-hidden="true" style="z-index: 1062">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h1>Entidad</h1>		
+					</div>
+					<div class="modal-body">
+						<div action="" class="form-horizontal" role="form">
+							<div class="form-group">
+								<label for="nombre" class="col-lg-2 control-label">Nombre</label>
+								<div class="col-lg-10"><input type="text" class="form-control" id="nombre" name="nombre"></div>
+							</div>
+							<div class="form-group">
+								<label for="descripcion" class="col-lg-2 control-label">Descripcion</label>
+								<div class="col-lg-10">
+									<textarea class="form-control" id="descripcion" name="descripcion"></textarea>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button id="aceptar" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
+						<button id="cancelar" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+					</div>
+				</div>
+			</div>
+		</div>
 
 	</script>
 
 
-	<script type="text/template" id="entidad-window-template">
+	<script type="text/template" id="valor-canonico-screen-template">
 
-	<div class="modal fade" id="entidadScr" aria-hidden="true" style="z-index: 1063">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h1>Entidades</h1>		
-				</div>
-				<div class="modal-body">
-					<form action="" class="form-horizontal" role="form">
-						<div class="form-group">
-							<label for="Pais" class="col-lg-2 control-label">Pais</label>
-							<div class="col-lg-10">
-								<div class="input-group" style="width: 50%">
-									<select name="paisdeprueba" id="e-paisdeprueba" class="form-control">
-										{% for pais in paises%}
-											<option value="{{pais.valor}}">{{pais.nombre}}</option>
-										{% endfor %}
+		<div class="modal fade" id="valor-canonico-screen" aria-hidden="true" style="z-index: 1062">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h1>Valor Canonico</h1>		
+					</div>
+					<div class="modal-body">
+						<div action="" class="form-horizontal" role="form">
+							<div class="form-group">
+								<label for="entidad" class="col-lg-2 control-label">Entidad</label>
+								<div class="col-lg-10">
+									<select id="entidad" name="entidad" class="form-control">
 									</select>
 								</div>
 							</div>
-						</div>
-						<div class="form-group">
-							<label for="nombre" class="col-lg-2 control-label">Nombre</label>
-							<div class="col-lg-10"><input type="text" class="form-control" id="e-nombre" name="nombre"></div>
-						</div>
-						<div class="form-group">
-							<label for="descripcion" class="col-lg-2 control-label">Descripcion</label>
-							<div class="col-lg-10">
-								<textarea class="form-control" id="e-descripcion" name="descripcion"></textarea>
+							<div class="form-group">
+								<label for="valor-canonico" class="col-lg-2 control-label">Valor Canonico</label>
+								<div class="col-lg-10"><input type="text" class="form-control" id="valor-canonico" name="valor-canonico" value="{{ VALOR_CANONICO }}"></div>
+							</div>
+							<div class="form-group">
+								<label for="descripcion" class="col-lg-2 control-label">Descripcion</label>
+								<div class="col-lg-10">
+									<textarea class="form-control" id="descripcion" name="descripcion">{{ DESCRIPCION }}</textarea>
+								</div>
 							</div>
 						</div>
-					</form>
-				</div>
-				<div class="modal-footer">
-					<button id="e-aceptar" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
-					<button id="e-cancelar" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+					</div>
+					<div class="modal-footer">
+						<button id="aceptar" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
+						<button id="cancelar" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
+
 	</script>
 
-	<script type="text/template" id="entidades-window-template">
+	<script type="text/template" id="valor-sistema-screen-template">
 
-	<div class="modal fade" id="entidadesScr" aria-hidden="true" style="z-index: 1061">
-		<div class="modal-dialog" style="width: 64%">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h1>Entidades</h1>		
-				</div>
-				<div class="modal-body">
-					<div class="form-horizontal">
-						<div class="form-group">
-							<label for="pais" class="col-lg-2 control-label">Pais</label>
-							<div class="col-lg-10">								
-								<div class="input-group" style="width: 50%">
-									<select name="pais" id="e-pais" class="form-control">
-										<option value="Argentina">Argentina</option>
-										<option value="Peru">Peru</option>
-										<option value="Chile">Chile</option>
-										<option value="Ecuador">Ecuador</option>
-										<option value="Venezuela">Venezuela</option>
+		<div class="modal fade" id="valor-sistema-screen" aria-hidden="true" style="z-index: 1062">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h1>Valor Sistema</h1>		
+					</div>
+					<div class="modal-body">
+						<div action="" class="form-horizontal" role="form">
+							<div class="form-group">
+								<label for="sistema" class="col-lg-2 control-label">Sistema</label>
+								<div class="col-lg-10">
+									<select id="sistema" name="sistema" class="form-control">
 									</select>
-									<!--<span class="input-group-btn">
-										<a id="#e-button-agregar-pais" data-toggle="modal" class="btn btn-success glyphicon glyphicon-plus" style="float: left" type="button" href="#paisScr"></a>
-									</span>-->
 								</div>
 							</div>
-						</div>
-						<div class="entidades">
-							<div class="lista-entidad">
-								<table id="e-table-from" data-toggle="table" data-url="valent.json" data-click-to-select="true" data-height="299">
-									<thead>
-										<tr>
-											<th data-field="state" data-checkbox="true"></th>
-											<th data-field="entidad" data-align="left" style="width: 30%">Entidad</th>
-										</tr>
-									</thead>
-								</table>
-							</div>
-							<div class="botones">
-								<div style="height: 100px">
-								</div>
-								<br/>
-								<div>
-									<button id="e-button-left" class="btn btn-default"><<</button>
-									<button id="e-button-right" class="btn btn-default">>></button>
-								</div>
-							</div>
-							<div class="lista-entidad">
-								<table id="e-table-to" data-toggle="table" data-url="valent.json" data-click-to-select="true" data-height="299">
-									<thead>
-										<tr>
-											<th data-field="state" data-checkbox="true"></th>
-											<th data-field="entidad" data-align="left" style="width: 30%">Entidad</th>
-										</tr>
-									</thead>
-								</table>
-							</div>
-							<!--<div class="botones">
-								<div>
-									<a id="e-button-agregar" data-toggle="modal" href="#valorEntidadScr" class="btn btn-success glyphicon glyphicon-plus" data-toggle="tooltip" data-placement="right" title="Agregar"></a>
-									<br/>
-									<a id="e-button-modificar" class="btn btn-primary glyphicon glyphicon-pencil" data-toggle="tooltip" data-placement="right" title="Modificar"></a>
-									<button id="e-button-quitar" class="btn btn-danger glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="right" title="Quitar"></button>
-								</div>
-							</div>-->
-						</div>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<div class="seccion-left">
-						<a class="btn btn-danger" data-dismiss="modal" id="es-cancelar">Cancelar</a>						
-					</div>
-					<div class="seccion-right">
-						<a id="e-button-siguiente" class="btn btn-success" data-dismiss="modal" data-toggle="modal" href="#valoresXEntidadScr">Siguiente</a>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	</script>
-	
-	
-	<script type="text/template" id="valor-entidad-window-template">
-
-	<div class="modal fade" id="valorEntidadScr" aria-hidden="true" style="z-index: 1062">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h1>Valor Entidad</h1>		
-				</div>
-				<div class="modal-body">
-					<form action="" class="form-horizontal" role="form">
-						<div class="form-group">
-							<label for="Pais" class="col-lg-2 control-label">Pais</label>
-							<div class="col-lg-10"><input type="text" class="form-control" id="v-e-s-pais" name="Pais" disabled></div>
-						</div>
-						<div class="form-group">
-							<label for="entidad" class="col-lg-2 control-label">Entidad</label>
-							<div class="col-lg-10">
-								<div class="input-group">
-									<select name="entidad" id="v-e-s-entidad" class="form-control">
-										<option value="Entidad 1">Entidad 1</option>
-										<option value="Entidad 2">Entidad 2</option>
-										<option value="Entidad 3">Entidad 3</option>
-										<option value="Entidad 4">Entidad 4</option>
-										<option value="Entidad 5">Entidad 5</option>
+							<div class="form-group">
+								<label for="entidad" class="col-lg-2 control-label">Entidad</label>
+								<div class="col-lg-10">
+									<select id="entidad" name="entidad" class="form-control">
 									</select>
-									<span class="input-group-btn">
-										<a data-toggle="modal" class="btn btn-success glyphicon glyphicon-plus" style="float: left" type="button" id="ve-llamarEntidad"></a>
-									</span>
 								</div>
 							</div>
-						</div>
-						<div class="form-group">
-							<label for="valor" class="col-lg-2 control-label">Valor</label>
-							<div class="col-lg-10">
-								<input type="text" class="form-control" id="v-e-s-valor" name="valor">
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="descripcion" class="col-lg-2 control-label">Descripcion</label>
-							<div class="col-lg-10">
-								<textarea class="form-control" id="v-e-s-descripcion" name="descripcion"></textarea>
-							</div>
-						</div>
-					</form>
-				</div>
-				<div class="modal-footer">
-					<button id="ve-aceptar" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
-					<button id="ve-cancelar" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	</script>
-
-	<script type="text/template" id="valor-sistema-window-template">
-
-	<div class="modal fade" id="valorSistemaScr" aria-hidden="true" style="z-index: 1061">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h1>Valor Sistema</h1>		
-				</div>
-				<div class="modal-body">
-					<form action="" class="form-horizontal" role="form">
-						<div class="form-group">
-							<label for="Pais" class="col-lg-2 control-label">Pais</label>
-							<div class="col-lg-10 select">
-								<select name="Pais" id="v-s-pais" class="form-control">
-									<option value="Argentina">Argentina</option>
-									<option value="Peru">Peru</option>
-									<option value="Chile">Chile</option>
-									<option value="Ecuador">Ecuador</option>
-									<option value="Venezuela">Venezuela</option>
-								</select>
-								<div>
-									<a data-toggle="modal" id="vs-llamarPais"><button class="btn btn-success glyphicon glyphicon-plus"></button></a>
+							<div class="form-group">
+								<label for="valor-canonico" class="col-lg-2 control-label">Valor Canonico</label>
+								<div class="col-lg-10">
+									<select id="valor-canonico" name="valor-canonico" class="form-control">
+										<option>Seleccione una Entidad</option>
+									</select>
 								</div>
 							</div>
-						</div>
-						<div class="form-group">
-							<label for="entidad" class="col-lg-2 control-label">Entidad</label>
-							<div class="col-lg-10 select">
-								<select name="entidad" id="v-s-entidad" class="form-control">
-									<option value="Entidad 1">Entidad 1</option>
-									<option value="Entidad 2">Entidad 2</option>
-									<option value="Entidad 3">Entidad 3</option>
-									<option value="Entidad 4">Entidad 4</option>
-									<option value="Entidad 5">Entidad 5</option>
-								</select>
-								<div>
-									<a data-toggle="modal" id="vs-llamarEntidad"><button class="btn btn-success glyphicon glyphicon-plus"></button></a>
-								</div>
+							<div class="form-group">
+								<label for="valor-sistema" class="col-lg-2 control-label">Valor Sistema</label>
+								<div class="col-lg-10"><input type="text" class="form-control" id="valor-sistema" name="valor-sistema" value="{{ VALOR_SISTEMA }}"></input></div>
 							</div>
-						</div>
-						<div class="form-group">
-							<label for="valorEntidad" class="col-lg-2 control-label">Valor Entidad</label>
-							<div class="col-lg-10 select">
-								<select name="valorEntidad" id="v-s-valor-entidad" class="form-control">
-									<option value="AA">AA</option>
-									<option value="BB">BB</option>
-									<option value="CC">CC</option>
-									<option value="DD">DD</option>
-									<option value="EE">EE</option>
-								</select>
-								<div>
-									<a data-toggle="modal" id="vs-llamarValorEntidad"><button class="btn btn-success glyphicon glyphicon-plus"></button></a>
-								</div>
-							</div>
-						</div>
-
-						<div class="form-group">
-							<label for="valorSistema" class="col-lg-2 control-label">Valor Sistema</label>
-							<div class="col-lg-10">
-								<input type="text" class="form-control" id="v-s-valor-sistema" name="valorSistema">
-							</div>
-						</div>
-					</form>
-				</div>
-				<div class="modal-footer">
-					<button id="vs-aceptar" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
-					<button id="vs-cancelar" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	</script>
-
-	<script type="text/template" id="valores-xentidad-window-template">
-
-	<div class="modal fade" id="valoresXEntidadScr" aria-hidden="true" style="z-index: 1062">
-		<div class="modal-dialog"  style="width: 60%">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h1>Valor x Entidad</h1>		
-				</div>
-				<div class="modal-body">
-					<div class="form-horizontal">
-						<div class="form-group">
-							<label for="Pais" class="col-lg-2 control-label">Pais</label>
-							<div class="col-lg-10"><input type="text" class="form-control" id="v-e-pais" name="Pais" disabled style="width: 50%"></div>
-						</div>
-						<div class="entidades">
-							<div class="lista-entidad">
-								<table id="v-e-table-from" data-toggle="table" data-url="valent.json" data-click-to-select="true" data-height="299">
-									<thead>
-										<tr>
-											<th data-field="state" data-checkbox="true"></th>
-											<th data-field="entidad" data-align="left" style="width: 30%">Entidad</th>
-											<th data-field="valor" data-align="left" style="width: 30%">Valor</th>
-											<th data-field="descripcion" data-align="left" style="width: 40%">Descripcion</th>
-										</tr>
-									</thead>
-								</table>
-							</div>
-							<div class="botones">
-								<div style="height: 100px">
-								</div>
-								<br/>
-								<div>
-									<button id="v-e-button-left" class="btn btn-default"><<</button>
-									<button id="v-e-button-right" class="btn btn-default">>></button>
-								</div>
-							</div>
-							<div class="lista-entidad">
-								<table id="v-e-table-to" data-toggle="table" data-url="valent.json" data-click-to-select="true" data-height="299">
-									<thead>
-										<tr>
-											<th data-field="state" data-checkbox="true"></th>
-											<th data-field="entidad" data-align="left" style="width: 30%">Entidad</th>
-											<th data-field="valor" data-align="left" style="width: 30%">Valor</th>
-											<th data-field="descripcion" data-align="left" style="width: 40%">Descripcion</th>
-										</tr>
-									</thead>
-								</table>
-							</div>
-							<!--<div class="botones">
-								<div>
-									<a id="v-e-button-agregar" data-toggle="modal" href="#valorEntidadScr" class="btn btn-success glyphicon glyphicon-plus" data-toggle="tooltip" data-placement="right" title="Agregar"></a>
-									<br/>
-									<a id="v-e-button-modificar" class="btn btn-primary glyphicon glyphicon-pencil" data-toggle="tooltip" data-placement="right" title="Modificar"></a>
-									<button id="v-e-button-quitar" class="btn btn-danger glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="right" title="Quitar"></button>
-								</div>
-							</div>-->
 						</div>
 					</div>
-				</div>
-				<div class="modal-footer">
-					<div class="seccion-left">
-						<a id="vxe-cancelar" class="btn btn-danger" data-dismiss="modal">Cancelar</a>						
-					</div>
-					<div class="seccion-right">
-						<a class="btn btn-primary" data-dismiss="modal" data-toggle="modal" href="#entidadesScr">Anterior</a>
-						<a id="v-e-button-finalizar" class="btn btn-success" data-dismiss="modal">Finalizar</a>
+					<div class="modal-footer">
+						<button id="aceptar" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
+						<button id="cancelar" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
 
 	</script>
 
-	<script type="text/template" id="valores-pais-window-template">
+	<script type="text/template" id="job-screen-template">
 
-	<div class="modal fade" id="valoresPaisScr" aria-hidden="true" style="z-index: 1061">
+	<div class="modal fade" id="jobScr" aria-hidden="true" style="z-index: 1060">
 		<div class="modal-dialog" style="width: 60%">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h1>Valores Pais</h1>		
+					<h3>{{job}}</h3>		
 				</div>
 				<div class="modal-body">
-					<form action="" class="form-horizontal" role="form">
-						<div class="form-group">
-							<label for="pais" class="col-lg-2 control-label">Pais</label>
-							<div class="col-lg-10">								
-								<div class="input-group">
-									<select name="pais" id="e-pais" class="form-control">
-										<option value="Argentina">Argentina</option>
-										<option value="Peru">Peru</option>
-										<option value="Chile">Chile</option>
-										<option value="Ecuador">Ecuador</option>
-										<option value="Venezuela">Venezuela</option>
-									</select>
-									<span class="input-group-btn">
-										<a id="nuevoPais" data-toggle="modal" class="btn btn-success glyphicon glyphicon-plus" style="float: left" type="button"></a>
-									</span>
-								</div>
+					<div class="form-horizontal" role="form">
+						<div class="bar-fase" align="center">
+							<div class="btn-group" id="DESA">
+							  <button type="button" class="btn btn-success main-btn disabled">DESA</button>
+							  <button type="button" class="btn btn-success dropdown-toggle toggle-btn disabled" data-toggle="dropdown" aria-expanded="false">
+							    <span class="caret"></span>
+							    <span class="sr-only">Toggle Dropdown</span>
+							  </button>
+							  <ul class="dropdown-menu" role="menu">
+							  	<li><a href="#">Siguiente Fase</a></li>
+							  </ul>
+						  	</div>
+							<div class="btn-group" id="IST">
+							  <button type="button" class="btn btn-success main-btn disabled">IST</button>
+							  <button type="button" class="btn btn-success dropdown-toggle toggle-btn disabled" data-toggle="dropdown" aria-expanded="false">
+							    <span class="caret"></span>
+							    <span class="sr-only">Toggle Dropdown</span>
+							  </button>
+							  <ul class="dropdown-menu" role="menu">
+							  	<li><a href="#">Fase Anterior</a></li>
+							  	<li><a href="#">Siguiente Fase</a></li>
+							  </ul>
+						  	</div>
+							<div class="btn-group" id="UATP">
+							  <button type="button" class="btn btn-success main-btn disabled">UATP</button>
+							  <button type="button" class="btn btn-success dropdown-toggle toggle-btn disabled" data-toggle="dropdown" aria-expanded="false">
+							    <span class="caret"></span>
+							    <span class="sr-only">Toggle Dropdown</span>
+							  </button>
+							  <ul class="dropdown-menu" role="menu">
+							  	<li><a href="#">Fase Anterior</a></li>
+							  	<li><a href="#">Siguiente Fase</a></li>
+							  </ul>
+						  	</div>
+							<div class="btn-group" id="ISTM">
+							  <button type="button" class="btn btn-success main-btn disabled">ISTM</button>
+							  <button type="button" class="btn btn-success dropdown-toggle toggle-btn disabled" data-toggle="dropdown" aria-expanded="false">
+							    <span class="caret"></span>
+							    <span class="sr-only">Toggle Dropdown</span>
+							  </button>
+							  <ul class="dropdown-menu" role="menu">
+							  	<li><a href="#">Fase Anterior</a></li>
+							  	<li><a href="#">Siguiente Fase</a></li>
+							  </ul>
+						  	</div>
+							<div class="btn-group" id="QAM">
+							  <button type="button" class="btn btn-success main-btn disabled">QAM</button>
+							  <button type="button" class="btn btn-success dropdown-toggle toggle-btn disabled" data-toggle="dropdown" aria-expanded="false">
+							    <span class="caret"></span>
+							    <span class="sr-only">Toggle Dropdown</span>
+							  </button>
+							  <ul class="dropdown-menu" role="menu">
+							  	<li><a href="#">Fase Anterior</a></li>
+							  	<li><a href="#">Siguiente Fase</a></li>
+							  </ul>
+						  	</div>
+							<div class="btn-group" id="PROD">
+							  <button type="button" class="btn btn-success main-btn disabled">PROD</button>
+							  <button type="button" class="btn btn-success dropdown-toggle toggle-btn disabled" data-toggle="dropdown" aria-expanded="false">
+							    <span class="caret"></span>
+							    <span class="sr-only">Toggle Dropdown</span>
+							  </button>
+							  <ul class="dropdown-menu" role="menu">
+							  	<li><a href="#">Fase Anterior</a></li>
+							  </ul>
+						  	</div>
+						</div>
+
+						<label for="proyecto">Proyecto</label>
+						<input class="form-control" type="text" id="proyecto" name="proyecto" value="{{ proyecto }}"></input>
+						<label for="descripcion">Descripcion</label>
+						<textarea name="descripcion" id="j-descripcion" class="form-control" style="margin-bottom: 1em">{{ descripcion }}</textarea>
+						<div id="tabla-dvms" style="height: 230px">
+							<ul class="nav nav-tabs">
+							  <li id="tabSistemas"><a href="#">Sistemas</a></li>
+							  <li id="tabEntidades" ><a href="#">Entidades</a></li>
+							  <li id="tabValoresCanonicos" ><a href="#">Valores Canonicos</a></li>
+							  <li id="tabValoresSistema" ><a href="#">Valores Sistema</a></li>
+							</ul>
+							<div class="tab-content">
 							</div>
 						</div>
-						<div class="lista-valor-pais">
-							<table id="v-p-table" data-toggle="table" data-url="valpais.json" data-click-to-select="true" data-height="299">
-								<thead>
-									<tr>
-										<th data-field="state" data-checkbox="true"></th>
-										<th data-field="entidad" data-align="left" style="width: 30%">Entidad</th>
-										<th data-field="valor entidad" data-align="left" style="width: 30%">Valor Entidad</th>
-										<th data-field="valor sistema" data-align="left" style="width: 30%">Valor Sistema</th>
-									</tr>
-								</thead>
-							</table>
-						</div>
-						<!--<div class="botones">
-							<div>
-								<a id="v-p-button-agregar" data-toggle="modal" href="#valorSistemaScr" class="btn btn-success glyphicon glyphicon-plus" data-toggle="tooltip" data-placement="right" title="Agregar"></a>
-								<br/>
-								<a id="v-p-button-modificar" class="btn btn-primary glyphicon glyphicon-pencil" data-toggle="tooltip" data-placement="right" title="Modificar"></a>
-								<button id="v-p-button-quitar" class="btn btn-danger glyphicon glyphicon-trash" data-toggle="tooltip" data-placement="right" title="Quitar"></button>
-							</div>
-						</div>-->
-					</form>
+					</div>
 				</div>
 				<div class="modal-footer">
 					<div class="seccion-left">
+						<a href="#verificacionScr" class="btn btn-primary" data-toggle="modal">Verificar</a>
+						<button class="btn btn-success" data-dismiss="modal">Importar</button>
 					</div>
 					<div class="seccion-right">
-						<a id="vp-aceptar" class="btn btn-success" data-dismiss="modal">Aceptar</a>
-						<a id="vp-cancelar" class="btn btn-danger" data-dismiss="modal">Cancelar</a>
+						<button id="j-aceptar" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
+						<button id="j-cancelar" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+	</script>
 
+	<script type="text/template" id="job-table-template">
+		<div class="dvm-table">
+			<div class="table-container">
+			</div>
+			<div class="botones" style="height: 250px">
+				<div>
+					<a id="btn-agregar" data-toggle="modal" class="btn btn-success glyphicon glyphicon-plus btn-botonera" data-toggle="tooltip" data-placement="right" title="Agregar"></a>
+					<a id="btn-modificar" class="btn btn-primary glyphicon glyphicon-pencil btn-botonera" data-toggle="tooltip" data-placement="right" title="Modificar"></a>
+					<a id="btn-eliminar" class="btn btn-danger glyphicon glyphicon-trash btn-botonera" data-toggle="tooltip" data-placement="right" title="Quitar"></a>
+					<a id="btn-importar" class="btn btn-primary glyphicon glyphicon-arrow-left btn-botonera" data-toggle="modal" data-toggle="tooltip" data-placement="right" title="Importar DVM existente"></a>
+				</div>
+			</div>
+		<div>
 	</script>
 
 </body>

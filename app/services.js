@@ -2,74 +2,81 @@ var app = require('express')(),
 	bodyParser = require('body-parser'),
 	fs = require('fs'),
 	manageJob = require('./tables/job'),
-	entidadCanonica = require('./tables/entidad-canonica');
+	verifyJob = require('./lib/verify-job');
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
+var ambientes = JSON.parse(fs.readFileSync('./app/cfg/ambientes.json'));
+
 function definirServicio (file) {
 
-	var servicio = require(file);
-	var filename = file.replace(/^.*[\\|\/]/, '');
-	var nombreServicio = filename.substring(0, filename.indexOf('.'));
-	console.log('Servicio %s', nombreServicio);
 
-	var url = '/' + nombreServicio;
+	for (var ambiente in ambientes) {
 
-	console.log('Publicando GET - %s...', url);
-	app.get(url + '/:ID?', function (req, res) {
+		var servicio = require(file)({});
+		var filename = file.replace(/^.*[\\|\/]/, '');
+		var nombreServicio = filename.substring(0, filename.indexOf('.'));
+		console.log('Servicio %s', nombreServicio);
 
-		if (!req.params.ID)
-			req.params = undefined;
+		var url = '/' + nombreServicio + '/' + ambiente;
 
-		var status = 200;
-		var ret = servicio.read(req.params);
-		if (!ret) {
-			status = 404;
-			ret = {};
-		}
-		res.status(status)
-			.json(ret)
-			.end();
+		console.log('Publicando GET - %s...', url);
+		app.get(url + '/:ID?', function (req, res) {
 
-	});
+			if (!req.params.ID)
+				req.params = undefined;
 
-	console.log('Publicando POST - %s...', url);
-	app.post(url, function (req, res) {
-		res.json(servicio.create(req.body))
-			.end();
-	});
+			var status = 200;
+			var ret = servicio.read(req.params);
+			if (ret == null) {
+				status = 404;
+				ret = {};
+			}
+			res.status(status)
+				.json(ret)
+				.end();
 
-	console.log('Publicando PUT - %s...', url);
-	app.put(url + '/:ID', function (req, res) {
+		});
 
-		var status = 200;
-		ret = servicio.update(req.params, req.body);
+		console.log('Publicando POST - %s...', url);
+		app.post(url, function (req, res) {
+			res.json(servicio.create(req.body))
+				.end();
+		});
 
-		if (!ret) {
-			status = 404;
-			ret = {}
-		}
+		console.log('Publicando PUT - %s...', url);
+		app.put(url + '/:ID', function (req, res) {
 
-		res.json(ret)
-			.end();
-	});
+			var status = 200;
+			ret = servicio.update(req.params, req.body);
 
-	console.log('Publicando DELETE - %s...', url);
-	app.delete(url + '/:ID', function (req, res) {
+			if (!ret) {
+				status = 404;
+				ret = {}
+			}
 
-		var status = 200;
-		var ret = servicio.delete(req.params);
+			res.json(ret)
+				.end();
+		});
 
-		if (!ret) {
-			status = 404;
-			ret = {};
-		}
+		console.log('Publicando DELETE - %s...', url);
+		app.delete(url + '/:ID', function (req, res) {
 
-		res.status(status)
-			.json(ret)
-			.end();
-	});
+			var status = 200;
+			var ret = servicio.delete(req.params);
+
+			if (!ret) {
+				status = 404;
+				ret = {};
+			}
+
+			res.status(status)
+				.json(ret)
+				.end();
+		});
+
+	}
 
 }
 
@@ -130,7 +137,7 @@ function definirServicioJob () {
 				job = {};
 				status = 500;
 			} else {
-				job.persist();
+				manageJob.persist();
 			}
 
 		} else {
@@ -147,7 +154,73 @@ function definirServicioJob () {
 			.json(job)
 			.end();
 
-	}); 
+	});
+
+	console.log('Publicando PUT - /job/:job?/:tabla?...');
+	app.put('/job/:job?/:tabla?/:id?', function (req, res) {
+
+		var status = 200;
+		var ret = null;
+
+		if (req.params.id) {
+
+			ret = manageJob.updateRegistroFromJob(req.params.job, 
+													req.params.tabla, 
+													req.params.id, req.body);
+
+		} else if (req.params.job) {
+
+			ret = manageJob.updateJob(req.params.job, req.body);
+
+		}
+
+		if (ret == null) {
+			status = 404;
+		}
+
+		res.status (status)
+			.json(ret)
+			.end();
+
+	});
+
+	console.log('Publicando DELETE - /job/:job?/:tabla?...');
+	app.delete('/job/:job?/:tabla?/:id?', function (req, res) {
+
+		var status = 200;
+		var ret = null;
+
+		if (req.params.id) {
+
+			ret = manageJob.removeRegistrosFromjob(req.params.job, 
+													req.params.tabla, 
+													req.params.id);
+
+		} else if (req.params.job) {
+
+			ret = manageJob.removeJob(req.params.job);
+
+		}
+
+		if (ret == null) {
+			status = 404;
+		}
+
+		res.status (status)
+			.json(ret)
+			.end();
+
+	});
+
+	console.log('Publicando POST - /verificar/:job');
+	app.post('/verificar/:job', function (req, res) {
+
+		var result = verifyJob(req.params.job);
+		res.json(result)
+			.end();
+
+	});
+
 
 }
 

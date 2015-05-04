@@ -1,1 +1,42 @@
-[{"job":12345,"proyecto":"1234 - Proyecto de prueba.","descripcion":"Descripcion del Job 12345","registros":{"sistema":[{"PAIS":"AR","ID":20,"NOMBRE":"MR23 20","DESCRIPCION":"IBS MR23 20"}],"entidadcanonica":[{"ID":1,"id":null},{"ID":1,"NOMBRE":"COUNTRY","DESCRIPCION":"Tabla Country","id":null},{"ID":2,"NOMBRE":"COUNTRY2","DESCRIPCION":"Tabla Country2"}],"valorcanonico":[],"valorsistema":[]}}]
+[
+{
+  "proyecto": "TEST - Proyecto de prueba.",
+  "descripcion": "Descripcion del Job 12345",
+  "target": "DESA",
+  "registros": {
+    "sistema": [
+      {
+      "ID": 1,
+      "NOMBRE": "COUNTRY",
+      "DESCRIPCION": "Tabla Country"
+      }
+    ],
+    "entidadcanonica": [
+      {
+      "ID": 2,
+      "NOMBRE": "FINANCIAL_ACCOUNT_TYPE",
+      "DESCRIPCION": "Tabla Financial_account_typeNNN",
+      "MOD": true
+      }
+    ],
+    "valorcanonico": [ 
+      {
+        "ID" : 142,
+        "ID_ENTIDAD_CANONICA" : 2,
+        "VALOR_CANONICO" : "C",
+        "DESCRIPCION" : "C"
+      }
+    ],
+    "valorsistema": [ 
+      {
+        "ID" : 142,
+        "ID_SISTEMA" : 1,
+        "VALOR_SISTEMA" : "1",
+        "ID_VALOR_CANONICO" : 6,
+        "ID_ENTIDAD_CANONICA" : 2
+      }
+    ]
+  },
+  "job": 12353
+}
+]
