@@ -8,6 +8,15 @@ window.collections.valoresCanonicos.comparator = "ID";
 window.collections.valoresSistema = new EnvMan.Collections.ValoresSistema();
 window.collections.valoresSistema.comparator = "ID";
 
+window.Fases = [
+	"DESA",
+	"IST",
+	"UATP",
+	"ISTM",
+	"QAM",
+	"PROD"
+];
+
 window.generales.agregarRegistroAlJob = function(tabla, registro) {
 
 	var ret =  true;
@@ -172,6 +181,26 @@ window.generales.modificarValorSistemaEnJob = function(registro) {
 	window.generales.normalizarEntidadCanonica(registro['ID_ENTIDAD_CANONICA']);
 
 	window.generales.normalizarValorCanonico(registro['ID_VALOR_CANONICO']);
+
+}
+
+window.generales.crearNuevoJob = function () {
+
+	window.job = {
+
+		target : "DESA",
+		proyecto : "",
+		descripcion : "",
+		registros : {
+
+			sistema : [],
+			entidadCanonica : [],
+			valorcanonico : [],
+			valorsistema : []
+
+		}
+
+	};
 
 }
 

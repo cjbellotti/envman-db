@@ -7,11 +7,40 @@ EnvMan.Views.Job = Backbone.View.extend({
 	},
 
 	events : {
+		"click .fase-anterior" : "faseAnterior",
+		"click .siguiente-fase" : "siguienteFase",
 		"click #tabSistemas" : "mostrarTablaSistemas",
 		"click #tabEntidades" : "mostrarTablaEntidades",
 		"click #tabValoresSistema" : "mostrarTablaValorSistema",
 		"click #tabValoresCanonicos" : "mostrarTablaValorCanonico",
-		"click #aceptar" : "guardar"
+		"click #aceptar" : "guardar",
+		"click #verificar" : "verificar"
+	},
+
+	faseAnterior : function (e) {
+
+		e.preventDefault();
+		var index = window.Fases.indexOf(window.job.target);
+		if (index >= 0) {
+			index--;
+			window.job.target = window.Fases[index];
+			this.$el.find('.btn-group button:not(.disabled)').addClass('disabled');
+			this.$el.find('#' + job.target + ' button').removeClass('disabled');
+		}
+
+	},
+
+	siguienteFase : function (e) {
+
+		e.preventDefault();
+		var index = window.Fases.indexOf(window.job.target);
+		if (index >= 0) {
+			index++;
+			window.job.target = window.Fases[index];
+			this.$el.find('.btn-group button:not(.disabled)').addClass('disabled');
+			this.$el.find('#' + job.target + ' button').removeClass('disabled');
+		}
+
 	},
 
 	mostrarTablaSistemas : function (e) {
@@ -176,15 +205,30 @@ EnvMan.Views.Job = Backbone.View.extend({
 
 	guardar : function (e) {
 
+		window.job.proyecto = this.$el.find('#proyecto').val();
+		window.job.descripcion = this.$el.find('#descripcion').val();
 		var jobModel = new EnvMan.Models.Job(window.job);
 		jobModel.save();
+		window.job = jobModel.toJSON();
+		window.collections.jobs.reset();
+		window.collections.jobs.fetch();
 
+	},
+
+	verificar : function (e) {
+
+		e.preventDefault();
+		var view = new EnvMan.Views.VerificarJob();
+		$('#modals').append(view.el);
+		view.render();
+		view.$el.modal('show');
 	},
 
 	render : function (job) {
 
 		this.$el.html(this.template(job));
 		this.$el.find('#' + job.target + ' button').removeClass('disabled');
+		this.mostrarTablaSistemas();
 
 	}
 

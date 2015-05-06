@@ -7,6 +7,10 @@ var app = require('express')(),
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
+app.use(function (req, res, next) {
+	console.log(req.body);
+	next();
+});
 
 var ambientes = JSON.parse(fs.readFileSync('./app/cfg/ambientes.json'));
 
@@ -226,6 +230,16 @@ function definirServicioJob () {
 	app.get('/generar-script/:job', function (req, res) {
 
 		var result = generarScript(req.params.job);
+		var nombreArchivo = __dirname + '/temp/'+ req.params.job+'.sql';
+		fs.writeFileSync(nombreArchivo, result, 'utf8');
+		res.sendFile(nombreArchivo);
+
+	});
+
+	console.log('Publicando GET - /generar-script/:job');
+	app.post('/generar-script', function (req, res) {
+
+		var result = generarScript(req.body);
 		var nombreArchivo = __dirname + '/temp/'+ req.params.job+'.sql';
 		fs.writeFileSync(nombreArchivo, result, 'utf8');
 		res.sendFile(nombreArchivo);

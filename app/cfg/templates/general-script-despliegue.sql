@@ -4,7 +4,7 @@ DECLARE
 
 BEGIN
 
-	{{ %ACCIONES% }}
+{{ %ACCIONES% }}
 	
 	COMMIT;
 		DBMS_OUTPUT.Put_line ('Termino OK');

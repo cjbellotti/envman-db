@@ -1,0 +1,20 @@
+ALTER SESSION SET CURRENT_SCHEMA=DTVLA;
+
+DECLARE
+
+BEGIN
+
+update DVM_VALOR_CANONICO set (7,9,'C','C') where ID = 7 and ID_ENTIDAD_CANONICA = 9 and VALOR_CANONICO = 'C' and DESCRIPCION = 'C';
+update DVM_VALOR_CANONICO set (12,9,'S','S') where ID = 12 and ID_ENTIDAD_CANONICA = 9 and VALOR_CANONICO = 'S' and DESCRIPCION = 'S';
+update DVM_VALOR_SISTEMA set (143,2,'XX',7,9,'') where ID = 143 and ID_SISTEMA = 2 and VALOR_SISTEMA = 'XX' and ID_VALOR_CANONICO = 7 and ID_ENTIDAD_CANONICA = 9 and DESCRIPCION = '';
+update DVM_VALOR_SISTEMA set (145,2,'ZZ',12,9,'') where ID = 145 and ID_SISTEMA = 2 and VALOR_SISTEMA = 'ZZ' and ID_VALOR_CANONICO = 12 and ID_ENTIDAD_CANONICA = 9 and DESCRIPCION = '';
+
+	
+	COMMIT;
+		DBMS_OUTPUT.Put_line ('Termino OK');
+	EXCEPTION
+   WHEN OTHERS
+   THEN
+      DBMS_OUTPUT.Put_line ('No se realizo ningun Insert.Error: ' || SQLERRM);
+
+END;

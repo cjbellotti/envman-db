@@ -167,7 +167,17 @@ function generarScript(nroJob) {
 
 	var script = "";
 
-	var job = manageJob.getJob(nroJob);
+	var job = {};
+
+	if (_.isObject(nroJob)) {
+
+		job.registros = nroJob;
+
+	} else {
+
+		job = manageJob.getJob(nroJob);
+
+	}
 
 	job = normalizarNombreTablas(job);
 
