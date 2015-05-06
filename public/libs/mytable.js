@@ -1,46 +1,29 @@
 function MyTable(config) {
 
 	var processCell = config.processCell || function (field, data) { return data; };
-	var style = $('<style/>');
-
-	style.append(".myTable { width: 100%; border : 1px solid gray; border-radius: 3px;}");
-	style.append(".myTable-header { width : 100%; overflow-y : scroll;}");
-	style.append(".myTable-table-header { width : 100%; border-collapse: collapse; float : left;}");
-	style.append(".myTable-body { width: 100%; overflow-y : scroll; height : 200px;}");
-	style.append(".myTable-table-body { width : 100%; border-collapse: collapse; position: relative; }");
-	style.append(".myTable-cell-header { border : 1px solid gray; }");
-	style.append(".myTable-cell-body { border : 1px solid gray; }");
-	style.append(".myTable-header-checkbox { border : 1px solid gray; text-align : center; }");
-	style.append(".myTable-body-checkbox { border : 1px solid gray; text-align : center; }");
-
-	$('head').append(style);
 
 	var tableData = [];
 
-	var myTableDiv = $('<div class="myTable"/>');
-	myTableDiv.bind('resize', function() {
-		console.log(this.width());
-	});
+	var myTableDiv = $('<div class="fixed-table-container" style="width : 100%"/>');
 
-	var headerDiv = $('<div class="myTable-header"/>');
-	var tableHeader = $('<table class="myTable-table-header"/>');
-	headerDiv.append(tableHeader);
+	var headerBackground = $('<div class="header-background"/>');
+	myTableDiv.append(headerBackground);
+
+	var innerTableDiv = $('<div class="fixed-table-container-inner"/>');
+	myTableDiv.append(innerTableDiv);
+
+	var table = $('<table/>');
+	innerTableDiv.append(table);
 
 	var thead = $('<thead/>');
 
 	var row = $('<tr/>');
 
-	var cellWidth = 0;
-	if (config.headers) {
-		if (config.headers.length > 0) {
-			cellWidth = 95 / config.headers.length;
-		}
-	}
-
 	if (config.selectable) {
 
 		var th = $('<th/>');
 		th.addClass('myTable-header-checkbox');
+		th.addClass('first');
 		var checkbox = $('<input type="checkbox" class="myTable-checkbox"></input>');
 
 		checkbox.on('click', function () {
@@ -55,9 +38,12 @@ function MyTable(config) {
 
 		});
 
-		th.css('width', '5%');
+		th.css('width', '3%');
 
-		th.append(checkbox);
+		var divInner = $('<div class="th-inner"/>');
+		divInner.append(checkbox);
+
+		th.append(divInner);
 		row.append(th);
 
 	}
@@ -67,28 +53,22 @@ function MyTable(config) {
 	for (var header in config.headers) {
 
 		var th = $('<th/>');
-		th.html(config.headers[header]);
-		th.addClass('myTable-cell-header');
-		th.css('width', cellWidth + '%');
+		var divInner = $('<div class="th-inner"/>');
+		divInner.html(config.headers[header]);
+		th.append(divInner);
 		row.append(th);
 
 		headerTemplate[config.headers[header]] = "";
 
 	}
 
+	var cellWidth = 97 / config.headers.length;
 	thead.append(row);
 
-	tableHeader.append(thead);
+	table.append(thead);
 
-	myTableDiv.append(headerDiv);
-
-	var bodyDiv = $('<div class="myTable-body"/>');
-	var tableBody = $('<table class="myTable-table-body"/>');
 	var tBody = $('<tbody/>');
-	tableBody.append(tBody);
-	bodyDiv.append(tableBody);
-
-	myTableDiv.append(bodyDiv);
+	table.append(tBody);
 
 	myTableDiv.addRow = function (data) {
 
@@ -110,7 +90,7 @@ function MyTable(config) {
 			})
 			td.addClass('myTable-body-checkbox');
 			td.append(checkbox);
-			td.css('width', '5%')
+			td.css('width', '3%')
 			row.append(td);
 
 		}
@@ -126,7 +106,7 @@ function MyTable(config) {
 			//td.html(data[field]);
 			td.html(content);
 			td.css('width', cellWidth + '%');
-			td.addClass('myTable-cell-body');
+			//td.addClass('myTable-cell-body');
 			row.append(td);
 		}
 
@@ -187,7 +167,7 @@ function MyTable(config) {
 	}
 
 	myTableDiv.setHeight = function (height) {
-		bodyDiv.css('height', height + 'px');
+		myTableDiv.css('height', height + 'px');
 	}
 
 	myTableDiv.reset = function () {

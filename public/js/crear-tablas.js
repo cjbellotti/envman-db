@@ -74,6 +74,15 @@ function crearTabla(config) {
 				var data = env.table.getRowArrayData(selecteds[index]);
 				generales.agregarRegistroAlJob(config.table, data);
 
+				if (data.ID_SISTEMA)
+					window.generales.normalizarSistema(data.ID_SISTEMA);
+
+				if (data.ID_ENTIDAD_CANONICA)
+					window.generales.normalizarEntidadCanonica(data.ID_ENTIDAD_CANONICA);
+
+				if (data.ID_VALOR_CANONICO)
+					window.generales.normalizarValorCanonico(data.ID_VALOR_CANONICO);
+
 			}
 
 		}

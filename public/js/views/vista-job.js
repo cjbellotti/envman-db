@@ -16,6 +16,11 @@ EnvMan.Views.Job = Backbone.View.extend({
 
 	mostrarTablaSistemas : function (e) {
 
+		this.$el.find('#tabSistemas').addClass('active');
+		this.$el.find('#tabEntidades').removeClass('active');
+		this.$el.find('#tabValoresSistema').removeClass('active');
+		this.$el.find('#tabValoresCanonicos').removeClass('active');
+
 		var configTable = {};
 		configTable.headers = [];
 		configTable.headers.push("ID");
@@ -38,6 +43,11 @@ EnvMan.Views.Job = Backbone.View.extend({
 	},
 
 	mostrarTablaEntidades : function (e) {
+
+		this.$el.find('#tabSistemas').removeClass('active');
+		this.$el.find('#tabEntidades').addClass('active');
+		this.$el.find('#tabValoresSistema').removeClass('active');
+		this.$el.find('#tabValoresCanonicos').removeClass('active');
 
 		var configTable = {};
 
@@ -62,6 +72,11 @@ EnvMan.Views.Job = Backbone.View.extend({
 
 	mostrarTablaValorSistema : function (e) {
 
+		this.$el.find('#tabSistemas').removeClass('active');
+		this.$el.find('#tabEntidades').removeClass('active');
+		this.$el.find('#tabValoresSistema').addClass('active');
+		this.$el.find('#tabValoresCanonicos').removeClass('active');
+
 		var configTable = {};
 
 		configTable.headers = [];
@@ -82,12 +97,26 @@ EnvMan.Views.Job = Backbone.View.extend({
 			if (field == "ID_ENTIDAD_CANONICA"){
 
 				var entidad = window.collections.entidades.get(content);
-				nombre = entidad.get('NOMBRE');
+				if (!entidad)
+					nombre = "Entidad " + content + " inexistente.";
+				else
+					nombre = entidad.get('NOMBRE');
 
 			} else if (field == "ID_SISTEMA") {
 
 				var sistema = window.collections.sistemas.get(content);
-				nombre = sistema.get('NOMBRE');
+				if (!sistema)
+					nombre = "Sistema " + content + " inexistente.";
+				else
+					nombre = sistema.get('NOMBRE');
+
+			} else if (field == "ID_VALOR_CANONICO") {
+
+				var valorCanonico = window.collections.valoresCanonicos.get(content);
+				if (!valorCanonico)
+					nombre = "Valor Canonico " + content + " inexistente.";
+				else
+					nombre = valorCanonico.get('VALOR_CANONICO');
 
 			}
 
@@ -105,6 +134,11 @@ EnvMan.Views.Job = Backbone.View.extend({
 
 	mostrarTablaValorCanonico : function (e) {
 
+		this.$el.find('#tabSistemas').removeClass('active');
+		this.$el.find('#tabEntidades').removeClass('active');
+		this.$el.find('#tabValoresSistema').removeClass('active');
+		this.$el.find('#tabValoresCanonicos').addClass('active');
+
 		var configTable = {};
 
 		configTable.headers = [];
@@ -117,7 +151,7 @@ EnvMan.Views.Job = Backbone.View.extend({
 		configTable.table = "valorcanonico";
 		configTable.model = EnvMan.Models.ValorCanonico;
 		configTable.view = EnvMan.Views.ValorCanonico;
-		configTable.viewImport = EnvMan.Views.ValorCanonico;
+		configTable.viewImport = EnvMan.Views.ValorCanonicoImportar;
 		configTable.processCell = function (field, content) {
 
 			var nombre = content;

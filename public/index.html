@@ -4,6 +4,7 @@
 	<meta charset="UTF-8">
 	<title>Environment Manager</title>
 	<link rel="stylesheet" href="libs/bootstrap/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/mytable.css">
 
 	<style>
 		.dvm-table {
@@ -44,6 +45,10 @@
 
 			height : 180px;
 			overflow: hidden;
+		}
+
+		.nav-tabs li {
+			cursor : pointer;
 		}
 
  	</style>
@@ -102,6 +107,10 @@
 	<script src="js/views/vista-job.js"></script>
 	<script src="js/views/vista-job-table.js"></script>
 	<script src="js/views/sistema-importar.js"></script>
+	<script src="js/views/entidad-importar.js"></script>
+	<script src="js/views/valor-canonico-importar.js"></script>	
+	<script src="js/views/valor-sistema-importar.js"></script>	
+	<script src="js/views/lista-jobs.js"></script>	
 
 	<!-- Preparacion -->
 	<script src="js/main.js"></script>
@@ -115,8 +124,10 @@
 			xhr.done (function (data) {
 				window.job = data;
 				var view = new EnvMan.Views.Job();
+				//var view = new EnvMan.Views.ListaJobs();
 				$('#main').html(view.el);
 				view.render(window.job);
+				//view.render();
 				$('#jobScr').modal('show');
 				view.mostrarTablaSistemas()
 				collections.sistemas.fetchData();
@@ -272,7 +283,7 @@
 
 	<script type="text/template" id="job-screen-template">
 		<div class="modal fade" id="jobScr" aria-hidden="true" style="z-index: 1060">
-			<div class="modal-dialog" style="width: 60%">
+			<div class="modal-dialog" style="width: 80%">
 				<div class="modal-content">
 					<div class="modal-header">
 						<h3>{{job}}</h3>		
@@ -423,6 +434,102 @@
 					<button id="importar" class="btn btn-primary" data-dismiss="modal">Importar</button>
 					<button id="cancelar" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
 				</div>
+			</div>
+		</div>
+	</script>
+
+	<script type="text/template" id="entidad-importar-template">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3>Importar Entidad Canonica</h3>
+				</div>
+				<div class="modal-body">
+					<div class="table-entidad-importar">
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button id="importar" class="btn btn-primary" data-dismiss="modal">Importar</button>
+					<button id="cancelar" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+				</div>
+			</div>
+		</div>
+	</script>
+
+	<script type="text/template" id="valor-canonico-importar-template">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3>Importar Valor Canonico</h3>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label for="id-entidad">Entidad</label>
+						<select id="id-entidad" name="id-entidad">
+
+						</select>
+					</div>
+					<div class="table-valor-canonico-importar">
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button id="importar" class="btn btn-primary" data-dismiss="modal">Importar</button>
+					<button id="cancelar" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+				</div>
+			</div>
+		</div>
+	</script>
+
+	<script type="text/template" id="valor-sistema-importar-template">
+		<div class="modal-dialog" style="width: 70%">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3>Importar Valor Sistema</h3>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label for="id-sistema">Sistema</label>
+						<select id="id-sistema" name="id-sistema">
+
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="id-entidad">Entidad</label>
+						<select id="id-entidad" name="id-entidad">
+
+						</select>
+					</div>
+					<div class="table-valor-sistema-importar">
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button id="importar" class="btn btn-primary" data-dismiss="modal">Importar</button>
+					<button id="cancelar" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+				</div>
+			</div>
+		</div>
+	</script>
+
+	<script type="text/template" id="lista-job-template">
+		<div class="panel panel-primary">
+			<div class="panel-heading">
+				<h2>Environment Manager</h2>
+			</div>
+			<div class="panel-body">
+			<table>
+				<thead>
+					<tr>
+						<td>Nombre</td>
+						<td>Apellido</td>
+						<td>DNI</td>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			</div>
+			<div class="panel-footer">
+				<button class="btn btn-success glyphicon glyphicon-plus" id="agregar"></button>
 			</div>
 		</div>
 	</script>
