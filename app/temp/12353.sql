@@ -1,0 +1,20 @@
+ALTER SESSION SET CURRENT_SCHEMA=DTVLA;
+
+DECLARE
+
+BEGIN
+
+	insert into DVM_SISTEMA (ID,NOMBRE,DESCRIPCION) values  ( 1,'COUNTRY','Tabla Country');
+update DVM_ENTIDAD_CANONICA set (2,'FINANCIAL_ACCOUNT_TYPE','Tabla Financial_account_typeNNN') where ID = 2 and NOMBRE = 'FINANCIAL_ACCOUNT_TYPE' and DESCRIPCION = 'Tabla Financial_account_typeNNN';
+insert into DVM_VALOR_CANONICO (ID,ID_ENTIDAD_CANONICA,VALOR_CANONICO,DESCRIPCION) values  ( 142,2,'C','C');
+insert into DVM_VALOR_SISTEMA (ID,ID_SISTEMA,VALOR_SISTEMA,ID_VALOR_CANONICO,ID_ENTIDAD_CANONICA) values  ( 142,1,'1',6,2);
+
+	
+	COMMIT;
+		DBMS_OUTPUT.Put_line ('Termino OK');
+	EXCEPTION
+   WHEN OTHERS
+   THEN
+      DBMS_OUTPUT.Put_line ('No se realizo ningun Insert.Error: ' || SQLERRM);
+
+END;

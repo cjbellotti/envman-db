@@ -8,7 +8,8 @@
       {
       "ID": 1,
       "NOMBRE": "COUNTRY",
-      "DESCRIPCION": "Tabla Country"
+      "DESCRIPCION": "Tabla Country",
+      "IDN" : 143
       }
     ],
     "entidadcanonica": [

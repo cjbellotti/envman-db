@@ -1,5 +1,11 @@
 EnvMan.Views.Entidad = Backbone.View.extend({
 
+	className : "modal fade",
+	attributes : {
+		"aria-hidden" : "true",
+		"style" : "z-index: 1063"
+	},
+
 	initialize : function () {
 
 		this.template = swig.compile( $('#entidad-screen-template').html());
@@ -41,8 +47,6 @@ EnvMan.Views.Entidad = Backbone.View.extend({
 			generales.modificarRegistroEnJob("entidadcanonica", this.model.toJSON());
 		}
 
-		this.$el.remove();
-
 	},
 
 	render : function () {
@@ -55,6 +59,11 @@ EnvMan.Views.Entidad = Backbone.View.extend({
 		}
 
 		this.$el.html(this.template(data));
+
+		var self = this;
+		this.$el.on('hidden.bs.modal', function () {
+			self.$el.remove();
+		});
 
 	}
 

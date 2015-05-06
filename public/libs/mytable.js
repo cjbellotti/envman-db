@@ -1,5 +1,6 @@
 function MyTable(config) {
 
+	var processCell = config.processCell || function (field, data) { return data; };
 	var style = $('<style/>');
 
 	style.append(".myTable { width: 100%; border : 1px solid gray; border-radius: 3px;}");
@@ -24,8 +25,6 @@ function MyTable(config) {
 	var headerDiv = $('<div class="myTable-header"/>');
 	var tableHeader = $('<table class="myTable-table-header"/>');
 	headerDiv.append(tableHeader);
-	//var divRelleno = $('<div style="background: green; width : 17px; height: 20px; float: left;"/>');
-	//headerDiv.append(divRelleno);
 
 	var thead = $('<thead/>');
 
@@ -63,6 +62,8 @@ function MyTable(config) {
 
 	}
 
+	var headerTemplate = {};
+
 	for (var header in config.headers) {
 
 		var th = $('<th/>');
@@ -70,6 +71,9 @@ function MyTable(config) {
 		th.addClass('myTable-cell-header');
 		th.css('width', cellWidth + '%');
 		row.append(th);
+
+		headerTemplate[config.headers[header]] = "";
+
 	}
 
 	thead.append(row);
@@ -112,8 +116,15 @@ function MyTable(config) {
 		}
 
 		for (var field in data) {
+			if (headerTemplate[field] != undefined)
+				headerTemplate[field] = data[field];
+		}
+
+		for (var field in headerTemplate) {
 			var td = $('<td/>');
-			td.html(data[field]);
+			var content = processCell(field, headerTemplate[field]);
+			//td.html(data[field]);
+			td.html(content);
 			td.css('width', cellWidth + '%');
 			td.addClass('myTable-cell-body');
 			row.append(td);
@@ -214,6 +225,13 @@ function MyTable(config) {
 			myTableDiv.addRow(data);
 
 		}
+
+		var self = this;
+		Object.observe(this.arrayData, function (changes) {
+
+			myTableDiv.setArrayData(self.arrayData, options);
+			
+		});
 
 	}
 

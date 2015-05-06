@@ -9,7 +9,7 @@ EnvMan.Views.JobTable = Backbone.View.extend({
 
 		var configTable = {};
 		configTable.headers = config.headers;
-
+		configTable.processCell = config.processCell;
 		configTable.selectable = true;
 		this.table = MyTable(configTable);
 		this.table.setHeight(150);
@@ -39,12 +39,16 @@ EnvMan.Views.JobTable = Backbone.View.extend({
 
 	onAgregar : function (e) {
 
+		console.log('Agregar');
+
 		e.preventDefault();
 		this.onAgregarFunction(this);
 
 	},
 
 	onModificar : function (e) {
+
+		console.log('Modificar');
 
 		e.preventDefault();
 		this.onModificarFunction(this);
@@ -53,6 +57,8 @@ EnvMan.Views.JobTable = Backbone.View.extend({
 
 	onEliminar : function (e) {
 
+		console.log('Eliminar');
+
 		e.preventDefault();
 		this.onEliminarFunction(this);
 
@@ -60,6 +66,8 @@ EnvMan.Views.JobTable = Backbone.View.extend({
 
 	onImportar : function (e) {
 
+		console.log('Importar');
+		
 		e.preventDefault();
 		this.onImportarFunction(this);
 

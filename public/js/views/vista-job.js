@@ -4,54 +4,65 @@ EnvMan.Views.Job = Backbone.View.extend({
 	
 		this.template = swig.compile( $('#job-screen-template').html() );
 
-		var configTable = {};
+	},
 
+	events : {
+		"click #tabSistemas" : "mostrarTablaSistemas",
+		"click #tabEntidades" : "mostrarTablaEntidades",
+		"click #tabValoresSistema" : "mostrarTablaValorSistema",
+		"click #tabValoresCanonicos" : "mostrarTablaValorCanonico",
+		"click #aceptar" : "guardar"
+	},
+
+	mostrarTablaSistemas : function (e) {
+
+		var configTable = {};
 		configTable.headers = [];
 		configTable.headers.push("ID");
 		configTable.headers.push("PAIS");
 		configTable.headers.push("NOMBRE");
 		configTable.headers.push("DESCRIPCION");
 		configTable.arrayData = job.registros.sistema;
+		configTable.title = "Sistema";
+		configTable.table = "sistema";
+		configTable.model = EnvMan.Models.Sistema;
+		configTable.view = EnvMan.Views.Sistema;
+		configTable.viewImport = EnvMan.Views.SistemaImportar;
 
-		configTable.onAgregar = function (env) {
+		var sistemasTable = crearTabla(configTable);
 
-			var view = new EnvMan.Views.Sistema({ model : new EnvMan.Models.Sistema() });
-			view.render();
-			$('#modals').append(view.el);
-			$('#sistema-screen').modal('show');
+		sistemasTable.render();
+		this.$el.find('.tab-content').html('');
+		this.$el.find('.tab-content').append(sistemasTable.$el);
 
-		};
+	},
 
-		configTable.onModificar = function (env) {
+	mostrarTablaEntidades : function (e) {
 
-			var selected = env.table.getSelectedRows();
-			if (selected.length > 0 ) {
-
-				var index = selected[0];
-				var data = env.table.getRowArrayData(index);
-				var model = new EnvMan.Models.Sistema(data);
-				var view = new EnvMan.Views.Sistema({ model : model});
-				view.render();
-				$('#modals').append(view.el);
-				$('#sistema-screen').modal('show');
-
-			}
-
-		}
-
-		this.sistemasTable = new EnvMan.Views.JobTable(configTable);
-
-		configTable = {};
+		var configTable = {};
 
 		configTable.headers = [];
 		configTable.headers.push("ID");
 		configTable.headers.push("NOMBRE");
 		configTable.headers.push("DESCRIPCION");
 		configTable.arrayData = job.registros.entidadcanonica;
+		configTable.title = "Entidad Canonica";
+		configTable.table = "entidadcanonica";
+		configTable.model = EnvMan.Models.Entidad;
+		configTable.view = EnvMan.Views.Entidad;
+		configTable.viewImport = EnvMan.Views.EntidadImportar;
 
-		this.entidadesTable = new EnvMan.Views.JobTable(configTable);
+		var entidadesTable = crearTabla(configTable);
 
-		configTable = {};
+		entidadesTable.render();
+		this.$el.find('.tab-content').html('');
+		this.$el.find('.tab-content').append(entidadesTable.$el);
+
+	},
+
+	mostrarTablaValorSistema : function (e) {
+
+		var configTable = {};
 
 		configTable.headers = [];
 		configTable.headers.push("ID");
@@ -60,10 +71,41 @@ EnvMan.Views.Job = Backbone.View.extend({
 		configTable.headers.push("ID_ENTIDAD_CANONICA");
 		configTable.headers.push("VALOR_SISTEMA");
 		configTable.arrayData = job.registros.valorsistema;
+		configTable.title = "Valor Sistema";
+		configTable.table = "valorsistema";
+		configTable.model = EnvMan.Models.ValorSistema;
+		configTable.view = EnvMan.Views.ValorSistema;
+		configTable.viewImport = EnvMan.Views.ValorSistemaImportar;
+		configTable.processCell = function (field, content) {
 
-		this.valorSistemaTable = new EnvMan.Views.JobTable(configTable);
+			var nombre = content;
+			if (field == "ID_ENTIDAD_CANONICA"){
 
-		configTable = {};
+				var entidad = window.collections.entidades.get(content);
+				nombre = entidad.get('NOMBRE');
+
+			} else if (field == "ID_SISTEMA") {
+
+				var sistema = window.collections.sistemas.get(content);
+				nombre = sistema.get('NOMBRE');
+
+			}
+
+			return nombre;
+
+		}
+
+		var valorSistemaTable = new crearTabla(configTable);
+
+		valorSistemaTable.render();
+		this.$el.find('.tab-content').html('');
+		this.$el.find('.tab-content').append(valorSistemaTable.$el);
+
+	},
+
+	mostrarTablaValorCanonico : function (e) {
+
+		var configTable = {};
 
 		configTable.headers = [];
 		configTable.headers.push("ID");
@@ -71,48 +113,37 @@ EnvMan.Views.Job = Backbone.View.extend({
 		configTable.headers.push("DESCRIPCION");
 		configTable.headers.push("VALOR_CANONICO");
 		configTable.arrayData = job.registros.valorcanonico;
+		configTable.title = "Valor Canonico";
+		configTable.table = "valorcanonico";
+		configTable.model = EnvMan.Models.ValorCanonico;
+		configTable.view = EnvMan.Views.ValorCanonico;
+		configTable.viewImport = EnvMan.Views.ValorCanonico;
+		configTable.processCell = function (field, content) {
 
-		this.valorCanonicoTable = new EnvMan.Views.JobTable(configTable);
+			var nombre = content;
+			if (field == "ID_ENTIDAD_CANONICA"){
 
+				var entidad = window.collections.entidades.get(content);
+				nombre = entidad.get('NOMBRE');
 
-	},
+			}
 
-	events : {
-		"click #tabSistemas" : "mostrarTablaSistemas",
-		"click #tabEntidades" : "mostrarTablaEntidades",
-		"click #tabValoresSistema" : "mostrarTablaValorSistema",
-		"click #tabValoresCanonicos" : "mostrarTablaValorCanonico"
-	},
+			return nombre;
 
-	mostrarTablaSistemas : function () {
+		}
 
-		this.sistemasTable.render();
+		var valorCanonicoTable = new crearTabla(configTable);
+
+		valorCanonicoTable.render();
 		this.$el.find('.tab-content').html('');
-		this.$el.find('.tab-content').append(this.sistemasTable.el);
+		this.$el.find('.tab-content').append(valorCanonicoTable.el);
 
 	},
 
-	mostrarTablaEntidades : function () {
+	guardar : function (e) {
 
-		this.entidadesTable.render();
-		this.$el.find('.tab-content').html('');
-		this.$el.find('.tab-content').append(this.entidadesTable.el);
-
-	},
-
-	mostrarTablaValorSistema : function (){
-
-		this.valorSistemaTable.render();
-		this.$el.find('.tab-content').html('');
-		this.$el.find('.tab-content').append(this.valorSistemaTable.el);
-
-	},
-
-	mostrarTablaValorCanonico : function () {
-
-		this.valorCanonicoTable.render();
-		this.$el.find('.tab-content').html('');
-		this.$el.find('.tab-content').append(this.valorCanonicoTable.el);
+		var jobModel = new EnvMan.Models.Job(window.job);
+		jobModel.save();
 
 	},
 

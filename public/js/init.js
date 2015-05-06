@@ -8,6 +8,14 @@ window.collections = {};
 window.views = {};
 window.generales = {};
 
+/*Array.prototype.oldPush = Array.push;
+Array.prototype.push = function (data) {
+	
+	this.oldPush(data);
+	console.log('Agrego %d', data);
+
+};*/
+
 window.job = {
 	"job" : 123456789,
 	"target" : "PROD",
@@ -48,6 +56,20 @@ window.job = {
 		]
 	}
 };
+
+Object.observe(job.registros.sistema, function(changes){
+
+	changes.forEach(function(change) {
+
+		console.log(change.type, change.name, change.oldValue);
+
+	});
+
+}); 
+
+Array.observe(job.registros.entidadcanonica, function(changes){
+	console.log(changes);
+})
 
 // Tablas
 

@@ -2,7 +2,8 @@ var app = require('express')(),
 	bodyParser = require('body-parser'),
 	fs = require('fs'),
 	manageJob = require('./tables/job'),
-	verifyJob = require('./lib/verify-job');
+	verifyJob = require('./lib/verify-job'),
+	generarScript = require('./lib/generar-script-dvm');
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -221,6 +222,15 @@ function definirServicioJob () {
 
 	});
 
+	console.log('Publicando GET - /generar-script/:job');
+	app.get('/generar-script/:job', function (req, res) {
+
+		var result = generarScript(req.params.job);
+		var nombreArchivo = __dirname + '/temp/'+ req.params.job+'.sql';
+		fs.writeFileSync(nombreArchivo, result, 'utf8');
+		res.sendFile(nombreArchivo);
+
+	});
 
 }
 

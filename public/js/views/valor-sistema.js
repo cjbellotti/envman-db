@@ -1,5 +1,11 @@
 EnvMan.Views.ValorSistema = Backbone.View.extend({
 
+	className : "modal fade",
+	attributes : {
+		"aria-hidden" : "true",
+		"style" : "z-index: 1063"
+	},
+
 	initialize : function () {
 
 		this.template = swig.compile( $('#valor-sistema-screen-template').html());
@@ -107,6 +113,12 @@ EnvMan.Views.ValorSistema = Backbone.View.extend({
 			}
 
 		}
+
+		var self = this;
+		this.$el.on('hidden.bs.modal', function () {
+			self.$el.remove();
+		});
+
 
 	},
 

@@ -54,7 +54,8 @@ window.generales.eliminarRegistroDeJob = function(tabla, registro) {
 		var index = _.findIndex(job.registros[tabla], { ID : registro.ID});
 
 		if (index >= 0) {
-			window.job.registros[tabla] = _.without(window.job.registros[tabla], window.job.registros[tabla][index]);
+			//window.job.registros[tabla] = _.without(window.job.registros[tabla], window.job.registros[tabla][index]);
+			job.registros[tabla].splice(index,1);
 			ret = true;
 		}
 

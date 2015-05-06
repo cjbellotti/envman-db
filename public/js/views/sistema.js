@@ -1,5 +1,11 @@
 EnvMan.Views.Sistema = Backbone.View.extend({
 
+	className : "modal fade",
+	attributes : {
+		"aria-hidden" : "true",
+		"style" : "z-index: 1063"
+	},
+
 	initialize : function () {
 
 		this.template = swig.compile( $('#sistema-screen-template').html());

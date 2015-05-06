@@ -1,5 +1,11 @@
 EnvMan.Views.ValorCanonico = Backbone.View.extend({
 
+	className : "modal fade",
+	attributes : {
+		"aria-hidden" : "true",
+		"style" : "z-index: 1063"
+	},
+
 	initialize : function () {
 
 		this.template = swig.compile( $('#valor-canonico-screen-template').html());
@@ -74,6 +80,11 @@ EnvMan.Views.ValorCanonico = Backbone.View.extend({
 		if (data['ID_ENTIDAD_CANONICA']) {
 			this.$el.find('#entidad').val(data['ID_ENTIDAD_CANONICA']);
 		}
+
+		var self = this;
+		this.$el.on('hidden.bs.modal', function () {
+			self.$el.remove();
+		});
 
 	},
 
