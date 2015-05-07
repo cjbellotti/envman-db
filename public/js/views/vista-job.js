@@ -4,6 +4,80 @@ EnvMan.Views.Job = Backbone.View.extend({
 	
 		this.template = swig.compile( $('#job-screen-template').html() );
 
+		window.collections.sistemas.reset();
+		window.collections.sistemas.fetchData();
+		window.collections.entidades.reset();
+		window.collections.entidades.fetchData();
+		window.collections.valoresCanonicos.reset();
+		window.collections.valoresCanonicos.fetchData();
+		window.collections.valoresSistema.reset();
+		window.collections.valoresSistema.fetchData();
+
+		var self = this;
+		$.post('/verificar/' + window.job.job, function (data) {
+
+				for (var tabla in data) {
+
+					var Model = null;
+					var collection = null;
+					switch (tabla) {
+
+						case 'sistema':
+
+							Model = EnvMan.Models.Sistema;
+							collection = window.collections.sistemas;
+							break;
+
+						case 'entidadcanonica' :
+
+							Model = EnvMan.Models.Entidad;
+							collection = window.collections.entidades;
+							break;
+
+						case 'valorcanonico' : 
+
+							Model = EnvMan.Models.ValorCanonico;
+							collection = window.collections.valoresCanonicos;
+							break;
+
+						case 'valorsistema' : 
+
+							Model = EnvMan.Models.ValorSistema;
+							collection = window.collections.ValorSistema;
+							break;
+							
+					}
+
+					for (var index in data[tabla]) {
+
+						var modelData = {};
+						for (var field in data[tabla][index]) {
+
+							if (field != 'IDN' && field != 'origen') {
+
+								modelData[field] = data[tabla][index][field];
+
+							}
+
+						}
+
+						var model = new Model(modelData);
+
+						if (data[tabla][index].IDN) {
+
+							collection.add(model);
+
+						} else if (data[tabla][index].MOD) {
+
+							collection.set(model, { remove : false });
+							
+						}
+
+					}
+
+				}
+		});
+
 	},
 
 	events : {

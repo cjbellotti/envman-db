@@ -39,23 +39,8 @@ EnvMan.Views.VerificarJob = Backbone.View.extend({
 				var view = new EnvMan.Views.VerScript();
 				$('#modals').append(view.el);
 				view.render();
-				view.$el.find('#script').html(data);
+				view.$el.find('#despliegue').html(data);
 				view.$el.modal('show');
-			    /*var save = document.createElement('a');
-			    save.href = data;
-			    save.target = '_blank';
-			    //Truco: así le damos el nombre al archivo 
-			    save.download = window.job.job + '.sql';
-			    var clicEvent = new MouseEvent('click', {
-			      'view': window,
-			      'bubbles': true,
-			      'cancelable': true
-			    });
-			    //Simulamos un clic del usuario
-			    //no es necesario agregar el link al DOM.
-			    save.dispatchEvent(clicEvent);
-			    //Y liberamos recursos...
-			    (window.URL || window.webkitURL).revokeObjectURL(save.href);*/
 			}
 
 		});
@@ -82,7 +67,7 @@ EnvMan.Views.VerificarJob = Backbone.View.extend({
 					registro.Descripcion = "";
 
 					for (var field in data[tabla][index]) {
-						if (field != "MOD" && field != "IDN") {
+						if (field != "MOD" && field != "IDN" && field != 'origenReg') {
 							registro.Descripcion += field + " : " + data[tabla][index][field] + " - ";
 						}
 					}

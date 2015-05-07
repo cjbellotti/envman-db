@@ -44,7 +44,6 @@ EnvMan.Views.ValorSistema = Backbone.View.extend({
 		this.model.set('ID_SISTEMA', parseInt(this.$el.find('#sistema').val()));
 		this.model.set('ID_ENTIDAD_CANONICA', parseInt(this.$el.find('#entidad').val()));
 		this.model.set('ID_VALOR_CANONICO', parseInt(this.$el.find('#valor-canonico').val()));
-		this.model.set('DESCRIPCION', this.$el.find('#descripcion').val() || "");
 		this.model.set('VALOR_SISTEMA', this.$el.find('#valor-sistema').val() || "")
 
 		if (nuevo) {

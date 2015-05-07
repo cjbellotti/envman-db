@@ -1,8 +1,11 @@
+var fs = require('fs');
 
 var tablesData = {};
 var incrementoID = 0;
 
-var claves = {
+var claves = JSON.parse(fs.readFileSync(__dirname + '/../../cfg/claves.json').toString());
+
+/*var claves = {
 
 	entidadcanonica : {
 		"NOMBRE" : {}
@@ -11,14 +14,15 @@ var claves = {
 		"NOMBRE" : {}
 	},
 	valorcanonico : {
-		"ID_ENTIDAD_CANONICA" : {}
+		"ID_ENTIDAD_CANONICA" : {},
+		"DESCRIPCION" : {}
 	},
 	valorsistema : {
 		"ID_SISTEMA" : {},
 		"ID_VALOR_CANONICO" : {},
 		"ID_ENTIDAD_CANONICA" : {}
 	}
-}
+}*/
 
 function verificarReg(tabla, reg) {
 
@@ -61,6 +65,7 @@ function verificarReg(tabla, reg) {
 				if (registro[field] != reg[field]) {
 
 					reg.MOD = true;
+					reg.origenReg = registro;
 					ret = reg;
 					modificar = true;
 

@@ -28,25 +28,6 @@ function initialize (path) {
 		var ret;
 		if (_.allKeys(query).length > 0) {
 
-			/*var match = false;
-			for (var i = 0; i < data.length && !match; i++) {
-
-				match=true;
-				for (key in query) {
-
-					if (query[key] != data[i][key])
-						match=false;
-
-				}
-
-				if (match)
-					ret = data[i];
-
-			}
-
-			if (!match)
-				ret=null;*/
-
 			var i = _.findIndex(data, query);
 			if (i >= 0)
 				ret = data[i];

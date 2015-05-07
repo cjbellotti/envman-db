@@ -11,7 +11,7 @@ EnvMan.Views.ValorSistema = Backbone.View.extend({
 		"click #vs-llamarValorEntidad" : 	"mostrarVentanaValorEntidad"
 	},
 
-		mostrarVentanaPais : function (e) {
+	mostrarVentanaPais : function (e) {
 
 		var view = new EnvMan.Views.Paises();
 		var id = 'modal' + Math.floor((Math.random() * 100000000) + 1);

@@ -1,0 +1,3 @@
+	{{ %ADD(valorsistema{{ %ID% }} DTVLA.DVM_VALOR_SISTEMA.ID%type;, DECLARACIONES)% }}
+	select nvl(max(id),0)+1 into valorsistema{{ %ID% }} from DTVLA.DVM_VALOR_SISTEMA;
+	insert into DTVLA.DVM_VALOR_SISTEMA (ID, ID_SISTEMA, ID_ENTIDAD_CANONICA, ID_VALOR_CANONICO, VALOR_SISTEMA) values  (valorsistema{{ %ID% }}, {{ %(sistema{{ %ID_SISTEMA% }}.*:=) ? sistema{{ %ID_SISTEMA% }} : {{ %ID_SISTEMA% }}% }}, {{ %(entidad{{ %ID_ENTIDAD_CANONICA% }}.*:=) ? entidad{{ %ID_ENTIDAD_CANONICA% }} : {{ %ID_ENTIDAD_CANONICA% }}% }}, {{ %(valorcanonico{{ %ID_VALOR_CANONICO% }}.*:=) ? valorcanonico{{ %ID_VALOR_CANONICO% }} : {{ %ID_VALOR_CANONICO% }}% }}, {{ %VALOR_SISTEMA% }});
