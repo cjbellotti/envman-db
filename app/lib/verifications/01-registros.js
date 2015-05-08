@@ -5,25 +5,6 @@ var incrementoID = 0;
 
 var claves = JSON.parse(fs.readFileSync(__dirname + '/../../cfg/claves.json').toString());
 
-/*var claves = {
-
-	entidadcanonica : {
-		"NOMBRE" : {}
-	},
-	sistema : {
-		"NOMBRE" : {}
-	},
-	valorcanonico : {
-		"ID_ENTIDAD_CANONICA" : {},
-		"DESCRIPCION" : {}
-	},
-	valorsistema : {
-		"ID_SISTEMA" : {},
-		"ID_VALOR_CANONICO" : {},
-		"ID_ENTIDAD_CANONICA" : {}
-	}
-}*/
-
 function verificarReg(tabla, reg) {
 
 	var ret = null;

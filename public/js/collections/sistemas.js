@@ -2,9 +2,9 @@ EnvMan.Collections.Sistemas = Backbone.Collection.extend({
 
 	model : EnvMan.Models.Sistema,
 
-	fetchData : function () {
+	fetchData : function (objeto) {
 		this.url = "/sistema/" + window.job.target;
-		this.fetch();
+		this.fetch(objeto);
 	}
 
 });

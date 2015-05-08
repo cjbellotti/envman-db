@@ -1,1 +1,1 @@
-	insert into {{ %TABLA% }} ({{ %CAMPOS% }}) values  ( {{ %VALORES% }});
+	insert into {{ %TABLA% }} ({{ %CAMPOS({{ %TABLA% }})% }}) values  ( {{ %VALORES({{ %TABLA% }})% }});

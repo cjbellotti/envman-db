@@ -194,13 +194,82 @@ window.generales.crearNuevoJob = function () {
 		registros : {
 
 			sistema : [],
-			entidadCanonica : [],
+			entidadcanonica : [],
 			valorcanonico : [],
 			valorsistema : []
 
 		}
 
 	};
+
+}
+
+window.generales.cargarColecciones = function () {
+
+	for (var tabla in window.job.registros) {
+
+		for (var index in window.job.registros[tabla]) {
+
+			var registro = window.job.registros[tabla][index];
+			var query = {};
+			for (var field in registro) {
+
+				if (field != 'ID' && field != 'DESCRIPCION')
+					query[field] = registro[field];
+
+			}
+
+			var model = null;
+			switch (tabla) {
+
+				case "sistema":
+
+					model = window.collections.sistemas.where(query);
+					if (model != null && model.length > 0) {
+						if (model[0].get('DESCRIPCION') != registro.DESCRIPCION)
+							window.collections.sistemas.set(new EnvMan.Models.Sistema(registro), { remove : false });
+					} else {
+						window.collections.sistemas.add(new EnvMan.Models.Sistema(registro));
+					}
+					break;
+
+				case "entidadcanonica":
+
+					model = window.collections.entidades.where(query);
+					if (model != null && model.length > 0) {
+						if (model[0].get('DESCRIPCION') != registro.DESCRIPCION)
+							window.collections.entidades.set(new EnvMan.Models.Entidad(registro), { remove : false});
+					} else {
+						window.collections.entidades.add(new EnvMan.Models.Entidad(registro));
+					}
+					break;
+
+				case "valorcanonico":
+
+					model = window.collections.valoresCanonicos.where(query);
+					if (model != null && model.length > 0) {
+						if (model[0].get('DESCRIPCION') != registro.DESCRIPCION)
+							window.collections.valoresCanonicos.set(new EnvMan.Models.ValorCanonico(registro), { remove : false});
+					} else {
+						window.collections.valoresCanonicos.add(new EnvMan.Models.ValorCanonico(registro));
+					}
+					break;
+
+				case "valorsistema":
+
+					model = window.collections.valoresSistema.where(query);
+					if (model != null && model.length > 0) {
+						window.collections.valoresSistema.set(new EnvMan.Models.ValorCanonico(registro), { remove : false});
+					} else {
+						window.collections.valoresSistema.add(new EnvMan.Models.ValorCanonico(registro));
+					}
+					break;
+
+			}
+
+		}
+
+	}
 
 }
 

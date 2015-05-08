@@ -2,9 +2,9 @@ EnvMan.Collections.ValoresCanonicos = Backbone.Collection.extend({
 
 	model : EnvMan.Models.ValorCanonico,
 
-	fetchData : function () {
+	fetchData : function (objeto) {
 		this.url = "/valor-canonico/" + window.job.target;
-		this.fetch();
+		this.fetch(objeto);
 	}
 
 });

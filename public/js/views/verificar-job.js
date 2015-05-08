@@ -39,7 +39,8 @@ EnvMan.Views.VerificarJob = Backbone.View.extend({
 				var view = new EnvMan.Views.VerScript();
 				$('#modals').append(view.el);
 				view.render();
-				view.$el.find('#despliegue').html(data);
+				view.$el.find('#despliegue').html(data.despliegue);
+				view.$el.find('#rollback').html(data.rollback);
 				view.$el.modal('show');
 			}
 

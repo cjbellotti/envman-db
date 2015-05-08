@@ -5,13 +5,41 @@ EnvMan.Views.Job = Backbone.View.extend({
 		this.template = swig.compile( $('#job-screen-template').html() );
 
 		window.collections.sistemas.reset();
-		window.collections.sistemas.fetchData();
 		window.collections.entidades.reset();
-		window.collections.entidades.fetchData();
 		window.collections.valoresCanonicos.reset();
-		window.collections.valoresCanonicos.fetchData();
 		window.collections.valoresSistema.reset();
-		window.collections.valoresSistema.fetchData();
+
+		window.collections.sistemas.fetchData({
+			success : function () {
+
+				window.collections.entidades.fetchData({
+					success : function () {
+
+						window.collections.valoresCanonicos.fetchData({
+
+							success : function () {
+
+								window.collections.valoresSistema.fetchData({
+
+									success : function () {
+
+										window.generales.cargarColecciones();
+
+									}
+
+								});
+
+							}
+
+						});
+
+					}
+
+				});
+
+			}
+
+		});
 
 		var self = this;
 		$.post('/verificar/' + window.job.job, function (data) {
@@ -43,7 +71,7 @@ EnvMan.Views.Job = Backbone.View.extend({
 						case 'valorsistema' : 
 
 							Model = EnvMan.Models.ValorSistema;
-							collection = window.collections.ValorSistema;
+							collection = window.collections.valoresSistema;
 							break;
 							
 					}
@@ -261,7 +289,12 @@ EnvMan.Views.Job = Backbone.View.extend({
 			if (field == "ID_ENTIDAD_CANONICA"){
 
 				var entidad = window.collections.entidades.get(content);
-				nombre = entidad.get('NOMBRE');
+
+				if (!entidad)
+					nombre = "Entidad " + content + " inexistente.";
+				else
+					nombre = entidad.get('NOMBRE');
+
 
 			}
 

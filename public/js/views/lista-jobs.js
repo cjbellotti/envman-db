@@ -34,7 +34,7 @@ EnvMan.Views.ListaJobs = Backbone.View.extend({
 		xhr.done(function(data, err) {
 
 			window.job = data;
-
+						
 			var view = new EnvMan.Views.Job();
 			$('#modals').html(view.el);
 			view.render(window.job);

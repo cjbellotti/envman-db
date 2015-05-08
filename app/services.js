@@ -236,13 +236,15 @@ function definirServicioJob () {
 
 	});
 
-	console.log('Publicando GET - /generar-script/:job');
+	console.log('Publicando POST - /generar-script/:job');
 	app.post('/generar-script', function (req, res) {
 
 		var result = generarScript(req.body);
-		var nombreArchivo = __dirname + '/temp/'+ req.params.job+'.sql';
-		fs.writeFileSync(nombreArchivo, result, 'utf8');
-		res.sendFile(nombreArchivo);
+		//var nombreArchivo = __dirname + '/temp/'+ req.params.job+'.sql';
+		//fs.writeFileSync(nombreArchivo, result, 'utf8');
+		//res.sendFile(nombreArchivo);
+		res.json(result)
+			.end();
 
 	});
 

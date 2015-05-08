@@ -48,15 +48,34 @@ fs.readdir(__dirname + '/functions', function (err, files) {
 			console.log('\t - ' + file);
 
 			var segmentosNombreArchivo = file.split('.');
-			var funcion = segmentosNombreArchivo[0];
+			segmentosNombreArchivo = segmentosNombreArchivo[0].split('-');
+			var ambito = segmentosNombreArchivo[0];
+			var funcion = segmentosNombreArchivo[1];
 
-			funciones[funcion] = require('./functions/' + file);
+			if (!funciones[ambito])
+				funciones[ambito] = {};
+
+			funciones[ambito][funcion] = require('./functions/' + file);
 
 		}
 
 	});
 
 });
+
+function limpiarRegistro (registro) {
+
+	var registroNuevo = {};
+
+	for (var field in registro) {
+
+		if (field != 'IDN' && field != 'MOD' && field != 'origenReg')
+			registroNuevo[field] = registro[field];
+	}
+
+	return registroNuevo;
+
+}
 
 function normalizarNombreTablas(job) {
 
@@ -112,28 +131,41 @@ function procesarTemplate(template, datos) {
 
 	for (var dato in datos) {
 
-		if (dato != "REGISTRO") {
+		switch (dato) {
 
-			regExp = new RegExp("\\{\\{\\s\\%" + dato + "\\%\\s\\}\\}", "g");
-			template = template.replace(regExp, datos[dato]);
+			case 'REGISTRO' :
 
-		} else if (dato == "REGISTRO") {
-			for (var field in datos[dato]) {
+				regExp = new RegExp("\\{\\{\\s\\%" + dato + "\\%\\s\\}\\}", "g");
+				template = template.replace(regExp, datos[dato]);
+				break;
 
-				regExp = new RegExp("\\{\\{\\s\\%" + field + "\\%\\s\\}\\}", "g");
-				var comilla = (typeof datos[dato][field] == 'string') ? "'" : "";
-				template = template.replace(regExp, comilla + datos[dato][field] + comilla);
+			case 'ORIGEN' :
 
-			}
-		} else if (dato == "ORIGEN") {
+				for (var field in datos[dato]) {
 
-			for (var field in datos[dato]) {
+					regExp = new RegExp("\\{\\{\\s\\%ORIGEN." + field + "\\%\\s\\}\\}", "g");
+					var comilla = (typeof datos[dato][field] == 'string') ? "'" : "";
+					template = template.replace(regExp, comilla + datos[dato][field] + comilla);
 
-				regExp = new RegExp("\\{\\{\\s\\%ORIGEN." + field + "\\%\\s\\}\\}", "g");
-				var comilla = (typeof datos[dato][field] == 'string') ? "'" : "";
-				template = template.replace(regExp, comilla + datos[dato][field] + comilla);
+				}
+				break;
 
-			}
+			case 'VALORES' :
+
+				for (var field in datos[dato]) {
+
+					regExp = new RegExp("\\{\\{\\s\\%VALORES." + field + "\\%\\s\\}\\}", "g");
+					var comilla = (typeof datos[dato][field] == 'string') ? "'" : "";
+					template = template.replace(regExp, comilla + datos[dato][field] + comilla);
+
+				}
+				break;
+
+			default :
+
+				regExp = new RegExp("\\{\\{\\s\\%" + dato + "\\%\\s\\}\\}", "g");
+				template = template.replace(regExp, datos[dato]);
+				break;
 
 		}
 
@@ -145,101 +177,46 @@ function procesarTemplate(template, datos) {
 
 function generarInsert(tabla, registro) {
 
-	var script = "";
-
-	var fields = [];
-	var values = [];
-
 	if (registro.IDN) {
 		registro.ID = registro.IDN;
-	}
-
-	for (var field in registro) {
-
-		if (field != 'IDN' && field != 'MOD') {
-
-			fields.push(field);
-
-			var valor = registro[field];
-			if (typeof registro[field] == 'string') {
-				valor = "'" + registro[field] + "'";
-			}
-
-			values.push(valor);
-
-		}
-
 	}
 
 	var datos = {
 
 		TABLA : tabla,
-		CAMPOS : fields.join(),
-		VALORES : values.join(),
-		REGISTRO : registro
+		VALORES : limpiarRegistro (registro),
+		ORIGEN : limpiarRegistro (registro.origenReg || {})
 
 	};
 
 	var templateInsert = "";
-	if (templates[tabla]){
+	if (templates[tabla]) {
 		if (templates[tabla].insert)
 			templateInsert = templates[tabla].insert;
 		else
-			templateInsert = templates.general.insert;	
+			templateInsert = templates.general.insert;
 	} else
 		templateInsert = templates.general.insert;
 
-	return procesarTemplate(templateInsert, datos);
+	var script = procesarFunciones('R',procesarTemplate(templateInsert, datos), datos);
+
+	return script;
+
 
 }
 
 function generarUpdate(tabla, registro) {
 
-	var script = "";
-
-	var fields = [];
-	var values = [];
-	var igualdad = [];
 
 	if (registro.IDN) {
 		registro.ID = registro.IDN;
 	}
 
-	for (var field in registro) {
-
-		if (field != 'ID' && field != 'IDN' && 
-			field != 'MOD' && field != 'origenReg') {
-
-			fields.push(field);
-
-			var valor = registro[field];
-			var valorOrigen = "";
-			if (registro.origenReg)
-				valorOrigen = registro.origenReg[field];
-
-			if (typeof registro[field] == 'string') {
-				valor = "'" + registro[field] + "'";
-				if (registro.origenReg)
-					valorOrigen = "'" + registro.origenReg[field] + "'";
-			}
-
-			if (!claves[tabla][field])
-				values.push(field + ' = ' + valor);
-
-			if (claves[tabla][field])
-				igualdad.push(field + ' = ' + valorOrigen);
-
-		}
-
-	}
-
 	var datos = {
 
 		TABLA : tabla,
-		CAMPOS : fields.join(),
-		VALORES : values.join(),
-		REGISTRO : registro,
-		IGUALDAD : igualdad.join(" and ")
+		VALORES : limpiarRegistro (registro),
+		ORIGEN : limpiarRegistro (registro.origenReg || {})
 
 	};
 
@@ -252,61 +229,26 @@ function generarUpdate(tabla, registro) {
 	} else
 		templateUpdate = templates.general.update;
 
-	return procesarTemplate(templateUpdate, datos);
+	var script = procesarFunciones('R',procesarTemplate(templateUpdate, datos), datos);
+
+	return script;
 
 }
 
 function generarRollback(tabla, registro) {
 
-	var accion = "";
-	var script = "";
-
-	var fields = [];
-	var values = [];
-	var igualdad = [];
+	var accion = "delete";
 
 	if (registro.IDN) {
 		registro.ID = registro.IDN;
-		accion = "delete";
 	} else if (registro.MOD) {
 		accion = "update";
-	}
-
-	for (var field in registro) {
-
-		if (field != 'ID' && field != 'IDN' && 
-			field != 'MOD' && field != 'origenReg') {
-
-			fields.push(field);
-
-			var valor = registro[field];
-			var valorOrigen = "";
-			if (registro.origenReg)
-				valorOrigen = registro.origenReg[field];
-			if (typeof registro[field] == 'string') {
-				valor = "'" + registro[field] + "'";
-				if (registro.origenReg)
-					valorOrigen = "'" + registro.origenReg[field] + "'";
-			}
-
-			if (!claves[tabla][field])
-				values.push(field + ' = ' + valor);
-
-			if (claves[tabla][field])
-				igualdad.push(field + ' = ' + valorOrigen);
-
-		}
-
-	}
-
+	} 
 	var datos = {
 
 		TABLA : tabla,
-		CAMPOS : fields.join(),
-		VALORES : values.join(),
-		REGISTRO : registro,
-		IGUALDAD : igualdad.join(" and "),
-		ORIGEN : registro.origenReg
+		VALORES : limpiarRegistro(registro.origenReg || registro), 
+		ORIGEN : limpiarRegistro(registro)
 
 	};
 
@@ -319,13 +261,15 @@ function generarRollback(tabla, registro) {
 	} else
 		template = templates.general[accion];
 
-	return procesarTemplate(template, datos);
+	var script = procesarFunciones('R',procesarTemplate(template, datos), datos);
+
+	return script;
 
 }
 
-function procesarFunciones (script) {
+function procesarFunciones (ambito, script, datos) {
 
-	for (var funcion in funciones) {
+	for (var funcion in funciones[ambito]) {
 
 		var regExpBusquedaFuncion = "\\{\\{\\s\\%" + funcion + "\\((.*?)\\)\\%\\s\\}\\}";
 		var busquedaFuncion = RegExp(regExpBusquedaFuncion, 'g');
@@ -335,7 +279,8 @@ function procesarFunciones (script) {
 
 			var reemplazo = match[0];
 			var params = match[1].split(',');
-			var resultado = funciones[funcion](DATOS, script, params);
+			var env = datos || DATOS;
+			var resultado = funciones[ambito][funcion](env, script, params);
 			script = script.replace(reemplazo, resultado);
 
 			match = busquedaFuncion.exec(script);
@@ -361,7 +306,9 @@ function procesarCondiciones (script) {
 		var busqueda = RegExp(expresion, 'g');
 
 		var reemplazo = match[0];
-		if (script.indexOf(busqueda) >= 0) {
+
+		var matchBusqueda = busqueda.exec(script);
+		if (matchBusqueda != null && matchBusqueda.index >= 0) {
 
 			script = script.replace(reemplazo, verdadero);
 
@@ -437,22 +384,52 @@ function generarScript(nroJob) {
 		ACCIONES : script
 	};
 
-	var scriptDespliegueTemplate = "";
-	if (templates[tabla]) {
-		if (templates[tabla].body)
-			scriptDespliegueTemplate = templates[tabla].body;
-		else
-			scriptDespliegueTemplate = templates.general.body;	
-	} else
-		scriptDespliegueTemplate = templates.general.body;
+	var scriptDespliegueTemplate = templates.general.body;
 
 	script = procesarTemplate(scriptDespliegueTemplate, data);
 
-	script = procesarFunciones(script);
+	script = procesarFunciones('G', script);
 	script = procesarDatosGenerales(script);
 	script = procesarCondiciones(script);
 
-	return script;
+	var result = {};
+	result.despliegue = script;
+
+	for (var field in DATOS) {
+		DATOS[field] = "";
+	}
+
+	script = "";
+
+	if (job) {
+
+		for (var tabla in job.registros) {
+
+			for (var registro in job.registros[tabla]) {
+
+				script += generarRollback(tabla, job.registros[tabla][registro]) + '\n';
+
+			}
+
+		}
+
+	}
+
+	data = {
+		ACCIONES : script
+	};
+
+	var scriptDespliegueTemplate = templates.general.body;
+
+	script = procesarTemplate(scriptDespliegueTemplate, data);
+
+	script = procesarFunciones('G', script);
+	script = procesarDatosGenerales(script);
+	script = procesarCondiciones(script);
+
+	result.rollback = script;
+
+	return result;
 
 }
 
