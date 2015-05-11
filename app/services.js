@@ -172,10 +172,12 @@ function definirServicioJob () {
 			ret = manageJob.updateRegistroFromJob(req.params.job, 
 													req.params.tabla, 
 													req.params.id, req.body);
+			manageJob.persist();
 
 		} else if (req.params.job) {
 
 			ret = manageJob.updateJob(req.params.job, req.body);
+			manageJob.persist();
 
 		}
 
@@ -200,10 +202,12 @@ function definirServicioJob () {
 			ret = manageJob.removeRegistrosFromjob(req.params.job, 
 													req.params.tabla, 
 													req.params.id);
+			manageJob.persist();
 
 		} else if (req.params.job) {
 
 			ret = manageJob.removeJob(req.params.job);
+			manageJob.persist();
 
 		}
 

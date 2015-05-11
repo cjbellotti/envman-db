@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Test Call Swig function</title>
+	<script src="libs/jquery/dist/jquery.min.js"></script>
+	<script src="libs/underscore/underscore-min.js"></script>
+	<script src="libs/backbone/backbone.js"></script>
+	<script src="libs/swig.js"></script>
+	<script src="libs/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script>
+		$(function() {
+
+			var template = swig.compile( $('#template').html() );
+
+			var DATOS = {
+
+				generales : {},
+				mensaje1 : "Este es el mensaje 1",
+				mensaje2 : "Este es el mensaje 2"
+
+			};
+
+			var html = template({
+				 MENSAJE : function () {
+
+					return "Este es un mensaje desde una funcion.";
+
+				},
+				DATOS : DATOS,
+				MOSTRARMENSAJE : function (texto) {
+					return "Mensaje: " + texto;
+				},
+				ADD : function (nombre, valor) {
+					DATOS.generales[nombre] = valor;
+				}
+
+			});
+
+			$('body').html(html);
+
+		});
+	</script>
+</head>
+<body>
+	
+	<script type="text/template" id="template">
+		SELECT * FROM TABLA WHERE MENSAJE = '{{ MENSAJE() }}';
+		{{DATOS.mensaje1}}
+		{{DATOS.mensaje2}}
+		{{ ADD('dato1','Hola Mundo!!') }}
+		<br/>
+		<h1>{{ MOSTRARMENSAJE(DATOS.generales.dato1) }}</h1>
+	</script>
+</body>
+</html>

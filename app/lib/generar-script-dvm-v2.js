@@ -1,6 +1,7 @@
 var manageJob = require('../tables/job');
 var fs = require('fs');
 var _ = require('underscore');
+var swig = require('swig');
 
 var scriptDespliegueTemplate = fs.readFileSync(__dirname + '/../cfg/templates/general-body-script-despliegue.sql').toString();
 
@@ -28,7 +29,9 @@ fs.readdir(templateDir, function (err, files) {
 
 			if (!templates[tabla])
 				templates[tabla] = {};
-			templates[tabla][accion] = fs.readFileSync(templateDir + '/' + file).toString();
+
+			var template = fs.readFileSync(templateDir + '/' + file).toString();
+			templates[tabla][accion] = swig.compile(template);
 
 		}
 
@@ -127,109 +130,28 @@ function normalizarNombreTablas(job) {
 
 }
 
-function procesarTemplate(template, datos) {
-
-	for (var dato in datos) {
-
-		switch (dato) {
-
-			case 'REGISTRO' :
-
-				regExp = new RegExp("\\{\\{\\s\\%" + dato + "\\%\\s\\}\\}", "g");
-				template = template.replace(regExp, datos[dato]);
-				break;
-
-			case 'ORIGEN' :
-
-				for (var field in datos[dato]) {
-
-					regExp = new RegExp("\\{\\{\\s\\%ORIGEN." + field + "\\%\\s\\}\\}", "g");
-					var comilla = (typeof datos[dato][field] == 'string') ? "'" : "";
-					template = template.replace(regExp, comilla + datos[dato][field] + comilla);
-
-				}
-				break;
-
-			case 'VALORES' :
-
-				for (var field in datos[dato]) {
-
-					regExp = new RegExp("\\{\\{\\s\\%VALORES." + field + "\\%\\s\\}\\}", "g");
-					var comilla = (typeof datos[dato][field] == 'string') ? "'" : "";
-					template = template.replace(regExp, comilla + datos[dato][field] + comilla);
-
-				}
-				break;
-
-			default :
-
-				regExp = new RegExp("\\{\\{\\s\\%" + dato + "\\%\\s\\}\\}", "g");
-				template = template.replace(regExp, datos[dato]);
-				break;
-
-		}
-
-	}
-
-	return template;
-
-}
-
-function generarInsert(tabla, registro) {
+function generarComando(comando, tabla, registro) {
 
 	if (registro.IDN) {
 		registro.ID = registro.IDN;
 	}
 
-	var datos = {
+	var datos = funciones[];
+	datos.DATOS = DATOS;
+	datos.TABLA  = tabla;
+	datos.VALORES = limpiarRegistro (registro);
+	datos.ORIGEN = limpiarRegistro (registro.origenReg || {});
 
-		TABLA : tabla,
-		VALORES : limpiarRegistro (registro),
-		ORIGEN : limpiarRegistro (registro.origenReg || {})
-
-	};
-
-	var templateInsert = "";
+	var template = "";
 	if (templates[tabla]) {
-		if (templates[tabla].insert)
-			templateInsert = templates[tabla].insert;
+		if (templates[tabla][comando])
+			template = templates[tabla][comando];
 		else
-			templateInsert = templates.general.insert;
+			template = templates.general[comando];
 	} else
-		templateInsert = templates.general.insert;
+		template = templates.general[comando];
 
-	var script = procesarFunciones('R',procesarTemplate(templateInsert, datos), datos);
-
-	return script;
-
-
-}
-
-function generarUpdate(tabla, registro) {
-
-
-	if (registro.IDN) {
-		registro.ID = registro.IDN;
-	}
-
-	var datos = {
-
-		TABLA : tabla,
-		VALORES : limpiarRegistro (registro),
-		ORIGEN : limpiarRegistro (registro.origenReg || {})
-
-	};
-
-	var templateUpdate = "";
-	if (templates[tabla]) {
-		if (templates[tabla].update)
-			templateUpdate = templates[tabla].update;
-		else
-			templateUpdate = templates.general.update;
-	} else
-		templateUpdate = templates.general.update;
-
-	var script = procesarFunciones('R',procesarTemplate(templateUpdate, datos), datos);
+	var script = template(datos);
 
 	return script;
 
@@ -306,11 +228,6 @@ function procesarCondiciones (script) {
 		var busqueda = RegExp(expresion, 'g');
 
 		var reemplazo = match[0];
-		reemplazo = reemplazo.replace(/([{|%|(|\\|)|?|:|\\s}])/g, '\\$1');
-		reemplazo = reemplazo.replace(/\\s/g , '\s');
-		reemplazo = reemplazo.replace(/ /g, '\\s');
-
-		reemplazo = new RegExp(reemplazo, 'g');
 
 		var matchBusqueda = busqueda.exec(script);
 		if (matchBusqueda != null && matchBusqueda.index >= 0) {
