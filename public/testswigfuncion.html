@@ -9,33 +9,89 @@
 	<script src="libs/swig.js"></script>
 	<script src="libs/bootstrap/dist/js/bootstrap.min.js"></script>
 	<script>
+
+		var DATOS = {};
+
 		$(function() {
 
-			var template = swig.compile( $('#template').html() );
+			var template = swig.compile( $('#script').html() );
 
-			var DATOS = {
+			DATOS.TABLA = 'DVM_ENTIDAD_CANONICA';
 
-				generales : {},
-				mensaje1 : "Este es el mensaje 1",
-				mensaje2 : "Este es el mensaje 2"
+			DATOS.VALORES = {};
+			DATOS.INITIALIZE = function () {
 
-			};
+				this.VALORES = {
+					ID : 1234,
+					NOMBRE : "'ENTIDAD_NUEVA'",
+					DESCRIPCION : "'Descripcion ENTIDAD_NUEVA'"
+				};
 
-			var html = template({
-				 MENSAJE : function () {
+				this.CAMPOS = ["ID", "NOMBRE", "DESCRIPCION"];
 
-					return "Este es un mensaje desde una funcion.";
+			}
 
-				},
-				DATOS : DATOS,
-				MOSTRARMENSAJE : function (texto) {
-					return "Mensaje: " + texto;
-				},
-				ADD : function (nombre, valor) {
-					DATOS.generales[nombre] = valor;
+			DATOS.ADD = function (valor, nombre) {
+				if (!this[nombre]) {
+					this[nombre] = "";
 				}
 
-			});
+				this[nombre] += valor;
+
+				return "";
+			}
+
+			DATOS.EXIST = function (cadena, busqueda) {
+
+				return (cadena.indexOf(busqueda) >= 0);
+
+			}
+
+			DATOS.CAMPOS = function () {
+
+				var campos = [];
+				for (var field in this.VALORES) {
+
+					campos.push(field);
+
+				}
+
+				return campos.join(', ');
+
+			}
+
+			DATOS.IGUALDAD = function () {
+
+				var igualdad = [];
+				for (var field in claves[this.TABLA]) {
+
+					var comillas = (typeof this.ORIGEN[field] == 'string') ? "'" : "";
+					igualdad.push(field + ' = ' + comillas + this.ORIGEN[field] + comillas);
+
+				}
+
+				return igualdad.join(' and ');
+
+			}
+
+			DATOS.DATOS = function () {
+
+				var igualdad = [];
+				for (var field in this.VALORES) {
+
+					if (!claves[this.TABLA][field] && field != 'ID') {
+						var comillas = (typeof this.VALORES[field] == 'string') ? "'" : "";
+						igualdad.push(field + ' = ' + comillas + this.VALORES[field] + comillas);
+					}
+
+				}
+
+				return igualdad.join(', ');
+
+			}
+
+			DATOS.INITIALIZE();
+			var html = template(DATOS);
 
 			$('body').html(html);
 
@@ -45,12 +101,55 @@
 <body>
 	
 	<script type="text/template" id="template">
-		SELECT * FROM TABLA WHERE MENSAJE = '{{ MENSAJE() }}';
-		{{DATOS.mensaje1}}
-		{{DATOS.mensaje2}}
-		{{ ADD('dato1','Hola Mundo!!') }}
-		<br/>
-		<h1>{{ MOSTRARMENSAJE(DATOS.generales.dato1) }}</h1>
+
+	{{ ADD('entidad' + VALORES.ID + ' DTVLA.DVM_ENTIDAD_CANONICA.ID%type;', 'DECLARACIONES') }}
+
+	select nvl(max(id),0)+1 into entidad{{ VALORES.ID }} from DTVLA.DVM_ENTIDAD_CANONICA;
+
+	insert into {{ TABLA }} (
+
+		{% for campo in VALORES %} 
+			{{ campo }}
+			{% if !loop.last %}
+			,
+			{% endif %} 
+		{% endfor %}
+
+		) values  (entidad{{ VALORES.ID }} , {{ VALORES.NOMBRE }}, {{ VALORES.DESCRIPCION }});
+
+	{{ DECLARACIONES }}
+
+	{% for campo in CAMPOS %}
+		{{ campo }} = {{ VALORES[campo] }}
+		{% if !loop.last %}
+			and
+		{% endif %}
+	{% endfor %}
+	;
+	</script>
+
+	<script type="text/template" id="script">
+	{{ ADD('entidad' + VALORES.ID + ' DTVLA.DVM_ENTIDAD_CANONICA.ID%type;', 'DECLARACIONES') }}
+		insert into {{ TABLA }} 
+			(
+				{% for campo in CAMPOS %}
+					{{ campo }}
+					{% if !loop.last %}
+						,
+					{% endif %}
+				{% endfor %}
+			) 
+			values  (
+				{% for campo in CAMPOS %}
+					{{ VALORES[campo] }}
+					{% if !loop.last %}
+						,
+					{% endif %}
+				{% endfor %}
+			);
+		{% if EXIST(DECLARACIONES, 'entidadxx') %}
+			<h1>Entidad Existe!!!!!	</h1>
+		{% endif %}
 	</script>
 </body>
 </html>

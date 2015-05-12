@@ -1,1 +1,1 @@
-	delete from {{ %TABLA% }} where {{ %IGUALDAD({{ %TABLA% }})% }};
+	delete from {{ TABLA }} where {% for campo in CLAVES %} {{ campo }} = {{ VALORES[campo] }} {% if !loop.last %} and {% endif %}{% endfor %};

@@ -1,1 +1,1 @@
-	insert into {{ %TABLA% }} ({{ %CAMPOS({{ %TABLA% }})% }}) values  ( {{ %VALORES({{ %TABLA% }})% }});
+	insert into {{ TABLA }} ( {% for campo in CAMPOS %} {{ campo }} {% if !loop.last %}, {% endif %}{% endfor %}) values  ({% for campo in CAMPOS %} {{ VALORES[campo] }}{% if !loop.last %}, {% endif %}{% endfor %});

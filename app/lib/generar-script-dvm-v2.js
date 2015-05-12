@@ -11,6 +11,20 @@ var claves = JSON.parse(fs.readFileSync('./app/cfg/claves.json'));
 
 var DATOS = {};
 
+DATOS.ADD = function (valor, nombre) {
+	if (!this[nombre]) {
+		this[nombre] = "";
+	}
+
+	this[nombre] += valor + '\n';
+
+	return "";
+}
+
+DATOS.EXIST = function (cadena, busqueda) {
+	return (cadena.indexOf(busqueda) >= 0);
+}
+
 var templateDir = __dirname + '/../cfg/templates';
 var templates = {};
 fs.readdir(templateDir, function (err, files) {
@@ -39,33 +53,6 @@ fs.readdir(templateDir, function (err, files) {
 
 });
 
-var funciones = {};
-fs.readdir(__dirname + '/functions', function (err, files) {
-
-	if (err) throw err;
-
-	console.log('Funciones:');
-	files.forEach(function (file) {
-		if(file.indexOf('.js') > 0) {
-
-			console.log('\t - ' + file);
-
-			var segmentosNombreArchivo = file.split('.');
-			segmentosNombreArchivo = segmentosNombreArchivo[0].split('-');
-			var ambito = segmentosNombreArchivo[0];
-			var funcion = segmentosNombreArchivo[1];
-
-			if (!funciones[ambito])
-				funciones[ambito] = {};
-
-			funciones[ambito][funcion] = require('./functions/' + file);
-
-		}
-
-	});
-
-});
-
 function limpiarRegistro (registro) {
 
 	var registroNuevo = {};
@@ -73,7 +60,10 @@ function limpiarRegistro (registro) {
 	for (var field in registro) {
 
 		if (field != 'IDN' && field != 'MOD' && field != 'origenReg')
-			registroNuevo[field] = registro[field];
+			var comilla = "";
+			if (typeof registro[field] == 'string' && registro[field].indexOf("'") < 0)
+				comilla = "'";
+			registroNuevo[field] = comilla + registro[field] + comilla;
 	}
 
 	return registroNuevo;
@@ -136,11 +126,17 @@ function generarComando(comando, tabla, registro) {
 		registro.ID = registro.IDN;
 	}
 
-	var datos = funciones[];
-	datos.DATOS = DATOS;
-	datos.TABLA  = tabla;
-	datos.VALORES = limpiarRegistro (registro);
-	datos.ORIGEN = limpiarRegistro (registro.origenReg || {});
+	DATOS.TABLA  = tabla;
+	DATOS.VALORES = limpiarRegistro (registro);
+	DATOS.ORIGEN = limpiarRegistro (registro.origenReg || {});
+	DATOS.CAMPOS = [];
+	for (var field in DATOS.VALORES) {
+		DATOS.CAMPOS.push(field);
+	}
+	DATOS.CLAVES = [];
+	for (var field in claves[tabla]) {
+		DATOS.CLAVES.push(field);
+	}
 
 	var template = "";
 	if (templates[tabla]) {
@@ -151,7 +147,7 @@ function generarComando(comando, tabla, registro) {
 	} else
 		template = templates.general[comando];
 
-	var script = template(datos);
+	var script = template(DATOS);
 
 	return script;
 
@@ -166,13 +162,19 @@ function generarRollback(tabla, registro) {
 	} else if (registro.MOD) {
 		accion = "update";
 	} 
-	var datos = {
 
-		TABLA : tabla,
-		VALORES : limpiarRegistro(registro.origenReg || registro), 
-		ORIGEN : limpiarRegistro(registro)
 
-	};
+	DATOS.TABLA = tabla;
+	DATOS.VALORES = limpiarRegistro(registro.origenReg || registro), 
+	DATOS.ORIGEN = limpiarRegistro(registro)
+	DATOS.CAMPOS = [];
+	for (var field in DATOS.VALORES) {
+		DATOS.CAMPOS.push(field);
+	}
+	DATOS.CLAVES = [];
+	for (var field in claves[tabla]) {
+		DATOS.CLAVES.push(field);
+	}
 
 	var template = "";
 	if (templates[tabla]) {
@@ -183,91 +185,13 @@ function generarRollback(tabla, registro) {
 	} else
 		template = templates.general[accion];
 
-	var script = procesarFunciones('R',procesarTemplate(template, datos), datos);
-
-	return script;
-
-}
-
-function procesarFunciones (ambito, script, datos) {
-
-	for (var funcion in funciones[ambito]) {
-
-		var regExpBusquedaFuncion = "\\{\\{\\s\\%" + funcion + "\\((.*?)\\)\\%\\s\\}\\}";
-		var busquedaFuncion = RegExp(regExpBusquedaFuncion, 'g');
-
-		var match = busquedaFuncion.exec(script);
-		while (match != null) {
-
-			var reemplazo = match[0];
-			var params = match[1].split(',');
-			var env = datos || DATOS;
-			var resultado = funciones[ambito][funcion](env, script, params);
-			script = script.replace(reemplazo, resultado);
-
-			match = busquedaFuncion.exec(script);
-
-		}
-
-	}
-
-	return script;
-
-}
-function procesarCondiciones (script) {
-
-	var condicion = /\{\{\s\%\s*\((.*?)\)\s*\?(.*?)\:(.*?)\%\s\}\}/g;
-
-	var match = condicion.exec(script);
-	while(match != null) {
-
-		var expresion = match[1];
-		var verdadero = match[2];
-		var falso = match[3];
-
-		var busqueda = RegExp(expresion, 'g');
-
-		var reemplazo = match[0];
-
-		var matchBusqueda = busqueda.exec(script);
-		if (matchBusqueda != null && matchBusqueda.index >= 0) {
-
-			script = script.replace(reemplazo, verdadero);
-
-		} else {
-
-			script = script.replace(reemplazo, falso);
-
-		}
-
-		match = condicion.exec(script);
-	}
-
-	return script;
-
-}
-
-function procesarDatosGenerales(script) {
-
-	for (var dato in DATOS) {
-
-		var reemplazo = "\\{\\{\\s\\%" + dato + "\\%\\s\\}\\}";
-		var regExpReemplazo = RegExp(reemplazo, 'g');
-		script = script.replace(regExpReemplazo, DATOS[dato]);
-
-	}
+	var script = template(DATOS);
 
 	return script;
 
 }
 
 function generarScript(nroJob) {
-
-	DATOS = {
-
-		DECLARACIONES : ""
-
-	};
 
 	var script = "";
 
@@ -285,6 +209,7 @@ function generarScript(nroJob) {
 
 	job = normalizarNombreTablas(job);
 
+
 	if (job) {
 
 		for (var tabla in job.registros) {
@@ -292,9 +217,9 @@ function generarScript(nroJob) {
 			for (var registro in job.registros[tabla]) {
 
 				if (job.registros[tabla][registro].MOD == undefined)
-					script += generarInsert(tabla, job.registros[tabla][registro]) + "\n";
+					script += generarComando('insert', tabla, job.registros[tabla][registro]) + "\n";
 				else
-					script += generarUpdate(tabla, job.registros[tabla][registro]) + "\n";
+					script += generarComando('update',tabla, job.registros[tabla][registro]) + "\n";
 
 			}
 
@@ -302,27 +227,16 @@ function generarScript(nroJob) {
 
 	}
 
-	var data = {
-		ACCIONES : script
-	};
+	DATOS.ACCIONES = script;
 
-	var scriptDespliegueTemplate = templates.general.body;
-
-	script = procesarTemplate(scriptDespliegueTemplate, data);
-
-	script = procesarFunciones('G', script);
-	script = procesarDatosGenerales(script);
-	script = procesarCondiciones(script);
+	script = templates.general.body(DATOS);
 
 	var result = {};
 	result.despliegue = script;
 
-	for (var field in DATOS) {
-		DATOS[field] = "";
-	}
-
 	script = "";
 
+	DATOS.DECLARACIONES = "";
 	if (job) {
 
 		for (var tabla in job.registros) {
@@ -337,20 +251,13 @@ function generarScript(nroJob) {
 
 	}
 
-	data = {
-		ACCIONES : script
-	};
+	DATOS.ACCIONES = script;
 
-	var scriptDespliegueTemplate = templates.general.body;
-
-	script = procesarTemplate(scriptDespliegueTemplate, data);
-
-	script = procesarFunciones('G', script);
-	script = procesarDatosGenerales(script);
-	script = procesarCondiciones(script);
+	script = templates.general.body(DATOS);
 
 	result.rollback = script;
-
+	DATOS.DECLARACIONES = "";
+	
 	return result;
 
 }

@@ -1,1 +1,1 @@
-	update {{ %TABLA% }} set ({{ %VALORES({{ %TABLA% }})% }}) where {{ %IGUALDAD({{ %TABLA% }})% }};
+	update {{ TABLA }} set ({% for campo in CAMPOS %}{{ campo }} = {{ VALORES[campo]}}{% if !loop.last %}, {% endif %}{% endfor %}) where {% for campo in CLAVES %} {{ campo }} = {{ VALORES[campo]}}{% if !loop.last %} and {% endif %}{% endfor %};

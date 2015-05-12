@@ -3,7 +3,7 @@ var app = require('express')(),
 	fs = require('fs'),
 	manageJob = require('./tables/job'),
 	verifyJob = require('./lib/verify-job'),
-	generarScript = require('./lib/generar-script-dvm');
+	generarScript = require('./lib/generar-script-dvm-v2');
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -234,9 +234,11 @@ function definirServicioJob () {
 	app.get('/generar-script/:job', function (req, res) {
 
 		var result = generarScript(req.params.job);
-		var nombreArchivo = __dirname + '/temp/'+ req.params.job+'.sql';
-		fs.writeFileSync(nombreArchivo, result, 'utf8');
-		res.sendFile(nombreArchivo);
+		//var nombreArchivo = __dirname + '/temp/'+ req.params.job+'.sql';
+		//fs.writeFileSync(nombreArchivo, result, 'utf8');
+		//res.sendFile(nombreArchivo);
+		res.json(result)
+			.end();
 
 	});
 
