@@ -41,7 +41,10 @@ EnvMan.Views.VerificarJob = Backbone.View.extend({
 				view.render();
 				view.$el.find('#despliegue').html(data.despliegue);
 				view.$el.find('#rollback').html(data.rollback);
-				view.$el.modal('show');
+				view.$el.modal({
+					backdrop : 'static',
+					keyboard : false
+				});
 			}
 
 		});
@@ -53,7 +56,14 @@ EnvMan.Views.VerificarJob = Backbone.View.extend({
 		// Solo cargo en la tabla los sistemas que NO se encuentren en el Job.
 
 		var self = this;
-		$.post('/verificar/' + window.job.job, function (data) {
+		window.generales.limpiarRegistros(window.job.registros);
+		//$.post('/verificar/' + window.job.job, function (data) {
+		$.ajax({
+			method : 'POST',
+			url : '/verificar', 
+			contentType : 'application/json',
+			data : JSON.stringify(window.job),
+			success: function (data) {
 
 			self.datos = data;
 
@@ -79,7 +89,8 @@ EnvMan.Views.VerificarJob = Backbone.View.extend({
 
 			self.table.setArrayData(arrayData);
 
-		});
+		//});
+		}});
 
 		this.$el.html(this.template());
 		this.$el.find('.table-content').append(this.table);

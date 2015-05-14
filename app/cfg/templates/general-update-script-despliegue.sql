@@ -1,1 +1,1 @@
-	update {{ TABLA }} set ({% for campo in CAMPOS %}{{ campo }} = {{ VALORES[campo]}}{% if !loop.last %}, {% endif %}{% endfor %}) where {% for campo in CLAVES %} {{ campo }} = {{ VALORES[campo]}}{% if !loop.last %} and {% endif %}{% endfor %};
+	update {{ TABLA }} set ({% for campo in CAMPOS %}{% if campo != 'ID' %}{{ campo }} = {{ VALORES[campo]}}{% if !loop.last %}, {% endif %}{% endif %}{% endfor %}) where {% for campo in CLAVES %} {{ campo }} = {{ VALORES[campo]}}{% if !loop.last %} and {% endif %}{% endfor %};

@@ -12,11 +12,11 @@ var claves = JSON.parse(fs.readFileSync('./app/cfg/claves.json'));
 var DATOS = {};
 
 DATOS.ADD = function (valor, nombre) {
-	if (!this[nombre]) {
-		this[nombre] = "";
+	if (!DATOS[nombre]) {
+		DATOS[nombre] = "";
 	}
 
-	this[nombre] += valor + '\n';
+	DATOS[nombre] += valor + '\n';
 
 	return "";
 }
@@ -59,11 +59,13 @@ function limpiarRegistro (registro) {
 
 	for (var field in registro) {
 
-		if (field != 'IDN' && field != 'MOD' && field != 'origenReg')
+		if (field != 'IDN' && field != 'MOD' && field != 'origenReg'){
 			var comilla = "";
 			if (typeof registro[field] == 'string' && registro[field].indexOf("'") < 0)
 				comilla = "'";
 			registroNuevo[field] = comilla + registro[field] + comilla;
+		}
+
 	}
 
 	return registroNuevo;

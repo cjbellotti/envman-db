@@ -4,7 +4,8 @@
 		"NOMBRE" : {}
 	},
 	"sistema" : {
-		"NOMBRE" : {}
+		"NOMBRE" : {},
+		"PAIS" : {}
 	},
 	"valorcanonico" : {
 		"ID_ENTIDAD_CANONICA" : {},

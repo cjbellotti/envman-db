@@ -74,10 +74,42 @@ function normalizarEntidadCanonica(registros) {
 	return registros;
 }
 
+function normalizarValorCanonico(registros) {
+
+	if (registros.valorcanonico) {
+
+		for (var index in registros.valorcanonico) {
+
+			var valorcanonico = registros.valorcanonico[index];
+
+			if (valorcanonico.IDN) {
+
+				if (registros.valorsistema) {
+
+					var indexValorSistema = _.findIndex(registros.valorsistema,
+													 { "ID_VALOR_CANONICO" : valorcanonico.ID});
+					if (indexValorSistema >= 0) {
+
+						registros.valorsistema[indexValorSistema]["ID_VALOR_CANONICO"] = valorcanonico.IDN;
+
+					}
+
+				}
+				
+			}
+
+		}
+
+	}
+
+	return registros;
+}
+
 module.exports = function (tables, registros) {
 
 	registros = normalizarSistema(registros);
 	registros = normalizarEntidadCanonica(registros);
+	registros = normalizarValorCanonico(registros);
 
 	return registros;
 

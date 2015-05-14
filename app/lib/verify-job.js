@@ -1,5 +1,6 @@
 var manageJob = require('../tables/job');
 var fs = require('fs');
+var _ = require('underscore');
 
 var ambientes = JSON.parse(fs.readFileSync('./app/cfg/ambientes.json'));
 
@@ -33,11 +34,23 @@ fs.readdir(__dirname + '/verifications', function (err, files) {
 
 });
 
-function verificarJob(nJob) {
+function verificarJob(nroJob) {
 
 	var result = null;
 
-	var job = manageJob.getJob(nJob);
+	var job = {};
+
+	if (_.isObject(nroJob)) {
+
+		job.target = nroJob.target;
+		job.registros = nroJob.registros;
+
+	} else {
+
+		job = manageJob.getJob(nroJob);
+
+	}
+	//var job = manageJob.getJob(nJob);
 
 	if (job) {
 

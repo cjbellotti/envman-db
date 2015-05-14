@@ -51,6 +51,27 @@
 			cursor : pointer;
 		}
 
+		.modal-open .modal {
+		  overflow-x: hidden;
+		  overflow-y: hidden;
+		}
+
+		.btn-file input[type=file] {
+  		    position: absolute;
+    		top: 0;
+    		right: 0;
+    		min-width: 100%;
+    		min-height: 100%;
+    		font-size: 100px;
+    		text-align: right;
+    		opacity: 0;
+    		outline: none;
+    		background: white;
+    		cursor: inherit;
+    		display: block;
+		}
+
+
  	</style>
 	
 </head>
@@ -113,6 +134,7 @@
 	<script src="js/views/lista-jobs.js"></script>	
 	<script src="js/views/verificar-job.js"></script>	
 	<script src="js/views/ver-script.js"></script>	
+	<script src="js/views/vista-importar.js"></script>	
 
 	<!-- Preparacion -->
 	<script src="js/main.js"></script>
@@ -378,7 +400,7 @@
 					<div class="modal-footer">
 						<div class="seccion-left">
 							<a href="#" class="btn btn-primary" id="verificar" data-toggle="modal">Verificar</a>
-							<button class="btn btn-success" data-dismiss="modal">Importar</button>
+							<button class="btn btn-success" id="importar">Importar</button>
 						</div>
 						<div class="seccion-right">
 							<button id="aceptar" class="btn btn-primary" data-dismiss="modal">Aceptar</button>
@@ -569,5 +591,31 @@
 			</div>
 		</div>
 	</script>
+
+	<script type="text/template" id="importar-window-template">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3>Importar desde archivo</h3>
+				</div>
+				<div class="modal-body">
+				<div class="input-group">
+					<span class="input-group-btn">
+                   	 	<span class="btn btn-file btn-primary">
+    						<input type="file" id="archivo">Browse</input>
+						</span>
+                	</span>
+					<input type="text" class="form-control" readonly>
+				</div>
+					
+				</div>
+				<div class="modal-footer">
+					<button id="importarArch" class="btn btn-primary" data-dismiss="modal">Importar</button>
+					<button id="cancelar" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+				</div>
+			</div>
+		</div>
+	</script>
+
 </body>
 </html>

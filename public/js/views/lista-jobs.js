@@ -19,7 +19,10 @@ EnvMan.Views.ListaJobs = Backbone.View.extend({
 		var view = new EnvMan.Views.Job();
 		$('#modals').html(view.el);
 		view.render(window.job);
-		$('#jobScr').modal('show');
+		$('#jobScr').modal({
+			backdrop : 'static',
+			keyboard : false
+		});
 
 	},
 
@@ -38,7 +41,10 @@ EnvMan.Views.ListaJobs = Backbone.View.extend({
 			var view = new EnvMan.Views.Job();
 			$('#modals').html(view.el);
 			view.render(window.job);
-			$('#jobScr').modal('show');
+			$('#jobScr').modal({
+				backdrop : 'static',
+				keyboard : false
+			});
 
 		});
 

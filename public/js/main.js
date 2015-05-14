@@ -273,5 +273,28 @@ window.generales.cargarColecciones = function () {
 
 }
 
+window.generales.limpiarRegistros = function (registros) {
+
+	for (var tabla in registros) {
+
+		for (var index in registros[tabla]) {
+
+			for (var field in registros[tabla][index]) {
+
+				if (field == 'IDN' || field == 'MOD' || field == 'origenReg') {
+
+					delete registros[tabla][index][field];
+
+				}
+
+			}
+
+		}
+
+	}
+
+}
+
+
 $(function() {
 })

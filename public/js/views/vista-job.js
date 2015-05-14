@@ -116,7 +116,8 @@ EnvMan.Views.Job = Backbone.View.extend({
 		"click #tabValoresSistema" : "mostrarTablaValorSistema",
 		"click #tabValoresCanonicos" : "mostrarTablaValorCanonico",
 		"click #aceptar" : "guardar",
-		"click #verificar" : "verificar"
+		"click #verificar" : "verificar",
+		"click #importar" : "importar"
 	},
 
 	faseAnterior : function (e) {
@@ -314,6 +315,7 @@ EnvMan.Views.Job = Backbone.View.extend({
 
 		window.job.proyecto = this.$el.find('#proyecto').val();
 		window.job.descripcion = this.$el.find('#descripcion').val();
+		window.generales.limpiarRegistros(window.job.registros);
 		var jobModel = new EnvMan.Models.Job(window.job);
 		jobModel.save();
 		window.job = jobModel.toJSON();
@@ -328,7 +330,28 @@ EnvMan.Views.Job = Backbone.View.extend({
 		var view = new EnvMan.Views.VerificarJob();
 		$('#modals').append(view.el);
 		view.render();
-		view.$el.modal('show');
+		view.$el.modal({
+
+			backdrop : 'static',
+			keyboard : false
+
+		});
+	},
+
+	importar : function (e) {
+
+		e.preventDefault();
+		
+		var view = new EnvMan.Views.ImportarArchivo ();
+		$('#modals').append(view.el);
+		view.render();
+		view.$el.modal({
+
+			backdrop : 'static',
+			keyboard : false
+
+		});
+
 	},
 
 	render : function (job) {

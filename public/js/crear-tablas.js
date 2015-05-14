@@ -13,7 +13,10 @@ function crearTabla(config) {
 		var view = new config.view({ model : new config.model() });
 		view.render();
 		$('#modals').append(view.$el);
-		view.$el.modal('show');
+		view.$el.modal({
+			backdrop : 'static',
+			keyboard : false
+		});
 
 	};
 
@@ -28,7 +31,10 @@ function crearTabla(config) {
 			var view = new config.view({ model : model});
 			view.render();
 			$('#modals').append(view.$el);
-			view.$el.modal('show');
+			view.$el.modal({
+				backdrop : 'static',
+				keyboard : false
+			});
 
 		}
 
@@ -55,7 +61,10 @@ function crearTabla(config) {
 			var view = new EnvMan.Views.DialogBox(data);
 			view.render();
 			$('#modals').append(view.$el);
-			view.$el.modal('show');
+			view.$el.modal({
+				backdrop : 'static',
+				keyboard : false
+			});
 
 		}
 
@@ -90,7 +99,10 @@ function crearTabla(config) {
 		var view = new config.viewImport(configView);
 		view.render();
 		$('#modals').append(view.$el);
-		view.$el.modal('show');
+		view.$el.modal({
+			backdrop : 'static',
+			keyboard : false
+		});
 
 	};
 

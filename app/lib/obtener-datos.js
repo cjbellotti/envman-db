@@ -103,8 +103,15 @@ function initialize (path) {
 	}
 
 	functions.lastId = function () {
-		var ret = _.last(data) || { ID : 0 };
-		return ret.ID;
+		var id = 0;
+		for (var index in data) {
+
+			if (data[index].ID > id) {
+				id = data[index].ID;
+			}
+
+		}
+		return id;
 	}
 
 	return functions;

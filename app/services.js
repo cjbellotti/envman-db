@@ -221,6 +221,15 @@ function definirServicioJob () {
 
 	});
 
+	console.log('Publicando POST - /verificar');
+	app.post('/verificar', function (req, res) {
+
+		var result = verifyJob(req.body);
+		res.json(result)
+			.end();
+
+	});
+
 	console.log('Publicando POST - /verificar/:job');
 	app.post('/verificar/:job', function (req, res) {
 
