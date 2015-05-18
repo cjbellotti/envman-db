@@ -20,7 +20,7 @@ EnvMan.Views.ImportarArchivo = Backbone.View.extend({
 
 		var self = this;
 		 		
-		var tablas = [];
+		var tablas = {};
 
 		var parseString = function (cadena) { return cadena; };
 
@@ -34,8 +34,13 @@ EnvMan.Views.ImportarArchivo = Backbone.View.extend({
 		sistema.nombre = "sistema";
 		sistema.model = EnvMan.Models.Sistema;
 		sistema.collection = window.collections.sistemas;
+		sistema.agregar = function (registro) {
 
-		tablas.push(sistema);
+			window.generales.agregarRegistroAlJob('sistema', registro);
+
+		};
+
+		tablas['DVM_SISTEMA'] = sistema;
 
 		var entidadcanonica = {};
 		entidadcanonica.fields = [
@@ -48,8 +53,13 @@ EnvMan.Views.ImportarArchivo = Backbone.View.extend({
 		entidadcanonica.nombre = "entidadcanonica";
 		entidadcanonica.model = EnvMan.Models.Entidad;
 		entidadcanonica.collection = window.collections.entidades;
+		entidadcanonica.agregar = function (registro) {
 
-		tablas.push(entidadcanonica);
+			window.generales.agregarRegistroAlJob('entidadcanonica', registro);
+			
+		};
+
+		tablas['DVM_ENTIDAD_CANONICA'] = entidadcanonica;
 
 		var valorcanonico = {};
 		valorcanonico.fields = [
@@ -63,8 +73,9 @@ EnvMan.Views.ImportarArchivo = Backbone.View.extend({
 		valorcanonico.nombre = "valorcanonico";
 		valorcanonico.model = EnvMan.Models.ValorCanonico;
 		valorcanonico.collection = window.collections.valoresCanonicos;
+		valorcanonico.agregar = window.generales.agregarValorCanonicoAJob;
 
-		tablas.push(valorcanonico);
+		tablas['DVM_VALOR_CANONICO'] = valorcanonico;
 
 		var valorsistema = {};
 		valorsistema.fields = [
@@ -79,8 +90,9 @@ EnvMan.Views.ImportarArchivo = Backbone.View.extend({
 		valorsistema.nombre = "valorsistema";
 		valorsistema.model = EnvMan.Models.ValorSistema;
 		valorsistema.collection = window.collections.valoresSistema;
+		valorsistema.agregar = window.generales.agregarValorSistemaAJob;
 
-		tablas.push(valorsistema);
+		tablas['DVM_VALOR_SISTEMA'] = valorsistema;
 
 		var reader = new FileReader();
 		reader.onload = function(e) {
@@ -91,19 +103,17 @@ EnvMan.Views.ImportarArchivo = Backbone.View.extend({
 			{
 
 				var columns = rows[indexRow].split(";");
-				var tablaIndex=columns[0];
-				tablaIndex--;
+				var nombreTabla=columns[0];
 
 				objeto = {};
 				var index = 0;
-				for (var indexField in tablas[tablaIndex].fields) {
+				for (var indexField in tablas[nombreTabla].fields) {
 					index++;
-					for (var field in tablas[tablaIndex].fields[indexField])
-						objeto[field] = tablas[tablaIndex].fields[indexField][field](columns[index]);
+					for (var field in tablas[nombreTabla].fields[indexField])
+						objeto[field] = tablas[nombreTabla].fields[indexField][field](columns[index]);
 				}
-				window.generales.agregarRegistroAlJob(tablas[tablaIndex].nombre, objeto);
-				//var model = new tablas[tablaIndex].model(objeto);
-				//tablas[tablaIndex].collection.add(model);
+
+				tablas[nombreTabla].agregar(objeto);
 
 			}
 
@@ -118,8 +128,9 @@ EnvMan.Views.ImportarArchivo = Backbone.View.extend({
 
 					for (tabla in window.job.registros) {
 
-						var index = _.findIndex(tablas, { nombre : tabla });
-						if (index >= 0) {
+						var nombreTabla = window.generales.normalizarNombreTabla(tabla);
+
+						if (tablas[nombreTabla]) {
 
 							for (var indexReg in window.job.registros[tabla]) {
 
@@ -127,8 +138,8 @@ EnvMan.Views.ImportarArchivo = Backbone.View.extend({
 								if (registro.IDN)
 									registro.ID = registro.IDN;
 
-								var model = new tablas[index].model(registro);
-								tablas[index].collection.add(model);
+								var model = new tablas[nombreTabla].model(registro);
+								tablas[nombreTabla].collection.add(model);
 
 							}
 						}

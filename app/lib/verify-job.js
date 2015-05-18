@@ -50,7 +50,6 @@ function verificarJob(nroJob) {
 		job = manageJob.getJob(nroJob);
 
 	}
-	//var job = manageJob.getJob(nJob);
 
 	if (job) {
 

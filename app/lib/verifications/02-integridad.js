@@ -12,12 +12,18 @@ function normalizarSistema (registros) {
 
 				if (registros.valorsistema) {
 
-					var indexValorSistema = _.findIndex(registros.valorsistema, { "ID_SISTEMA" : sistema.ID});
-					if (indexValorSistema >= 0) {
+					var indexValorSistema = 0;
 
-						registros.valorsistema[indexValorSistema]["ID_SISTEMA"] = sistema.IDN;
+					do {
 
-					}
+						indexValorSistema = _.findIndex(registros.valorsistema, { "ID_SISTEMA" : sistema.ID});
+						if (indexValorSistema >= 0) {
+
+							registros.valorsistema[indexValorSistema]["ID_SISTEMA"] = sistema.IDN;
+
+						}
+
+					} while (indexValorSistema >= 0);
 
 				}
 				
@@ -43,25 +49,37 @@ function normalizarEntidadCanonica(registros) {
 
 				if (registros.valorsistema) {
 
-					var indexValorSistema = _.findIndex(registros.valorsistema,
-													 { "ID_ENTIDAD_CANONICA" : entidadcanonica.ID});
-					if (indexValorSistema >= 0) {
+					var indexValorSistema = 0;
 
-						registros.valorsistema[indexValorSistema]["ID_ENTIDAD_CANONICA"] = entidadcanonica.IDN;
+					do {
 
-					}
+						indexValorSistema = _.findIndex(registros.valorsistema,
+														 { "ID_ENTIDAD_CANONICA" : entidadcanonica.ID});
+						if (indexValorSistema >= 0) {
+
+							registros.valorsistema[indexValorSistema]["ID_ENTIDAD_CANONICA"] = entidadcanonica.IDN;
+
+						}
+
+					} while (indexValorSistema >= 0);
 
 				}
 
 				if (registros.valorcanonico) {
 
-					var indexValorCanonico = _.findIndex(registros.valorcanonico,
-													 { "ID_ENTIDAD_CANONICA" : entidadcanonica.ID});
-					if (indexValorCanonico >= 0) {
+					var indexValorCanonico = 0;
 
-						registros.valorcanonico[indexValorSistema]["ID_ENTIDAD_CANONICA"] = entidadcanonica.IDN;
+					do {
 
-					}
+						indexValorCanonico = _.findIndex(registros.valorcanonico,
+														 { "ID_ENTIDAD_CANONICA" : entidadcanonica.ID});
+						if (indexValorCanonico >= 0) {
+
+							registros.valorcanonico[indexValorCanonico]["ID_ENTIDAD_CANONICA"] = entidadcanonica.IDN;
+
+						}
+
+					} while (indexValorCanonico >= 0);
 
 				}
 				
@@ -86,13 +104,18 @@ function normalizarValorCanonico(registros) {
 
 				if (registros.valorsistema) {
 
-					var indexValorSistema = _.findIndex(registros.valorsistema,
-													 { "ID_VALOR_CANONICO" : valorcanonico.ID});
-					if (indexValorSistema >= 0) {
+					var indexValorSistema = 0;
+					do {
 
-						registros.valorsistema[indexValorSistema]["ID_VALOR_CANONICO"] = valorcanonico.IDN;
+						indexValorSistema = _.findIndex(registros.valorsistema,
+														 { "ID_VALOR_CANONICO" : valorcanonico.ID});
+						if (indexValorSistema >= 0) {
 
-					}
+							registros.valorsistema[indexValorSistema]["ID_VALOR_CANONICO"] = valorcanonico.IDN;
+
+						}
+
+					} while (indexValorSistema >= 0);
 
 				}
 				

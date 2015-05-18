@@ -298,6 +298,40 @@ window.generales.limpiarRegistros = function (registros) {
 
 }
 
+window.generales.normalizarNombreTabla = function (nombreTabla) {
+
+	var nombreTablaNormalizado = '';
+	switch (nombreTabla) {
+		case 'sistema':
+
+			nombreTablaNormalizado = 'DVM_SISTEMA';
+			break;
+
+		case 'entidadcanonica':
+
+			nombreTablaNormalizado = 'DVM_ENTIDAD_CANONICA';
+			break;
+
+		case 'valorcanonico':
+
+			nombreTablaNormalizado = 'DVM_VALOR_CANONICO';
+			break;
+
+		case 'valorsistema':
+
+			nombreTablaNormalizado = 'DVM_VALOR_SISTEMA';
+			break;
+
+		default:
+
+			nombreTablaNormalizado = null;
+			break;
+
+	}
+
+	return nombreTablaNormalizado;
+	
+};
 
 $(function() {
 })

@@ -16,7 +16,8 @@ DATOS.ADD = function (valor, nombre) {
 		DATOS[nombre] = "";
 	}
 
-	DATOS[nombre] += valor + '\n';
+	if (DATOS[nombre].indexOf(nombre) < 0)
+		DATOS[nombre] += valor + '\n';
 
 	return "";
 }

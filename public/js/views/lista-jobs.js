@@ -21,7 +21,7 @@ EnvMan.Views.ListaJobs = Backbone.View.extend({
 		"click #agregar" : "agregar",
 		"click .link-job" : "mostrarJob",
 		"change #ordenar" : "ordenar",
-		"keydown #filtro" : "filtrar",
+		"keyup #filtro" : "filtrar",
 		"click #filtrar" : "filtrar"	
 
 	},
