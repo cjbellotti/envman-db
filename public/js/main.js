@@ -1,3 +1,6 @@
+
+Date.prototype.getYYYYMMDD = function () { return this.toISOString().replace(/(.*?)\-(.*?)\-(.*?)T.*/g,"$1-$2-$3"); }
+
 window.collections.jobs = new EnvMan.Collections.Jobs();
 window.collections.sistemas = new EnvMan.Collections.Sistemas();
 window.collections.sistemas.comparator = "ID";

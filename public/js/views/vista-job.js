@@ -313,6 +313,7 @@ EnvMan.Views.Job = Backbone.View.extend({
 
 	guardar : function (e) {
 
+		window.job.fecha = window.job.fecha || new Date();
 		window.job.proyecto = this.$el.find('#proyecto').val();
 		window.job.descripcion = this.$el.find('#descripcion').val();
 		window.generales.limpiarRegistros(window.job.registros);

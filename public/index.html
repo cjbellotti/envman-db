@@ -71,6 +71,14 @@
     		display: block;
 		}
 
+		.filtros {
+			text-align: center;
+			padding : 1%;
+		}
+
+		.ordenar {
+			width : 20%;
+		}
 
  	</style>
 	
@@ -540,6 +548,16 @@
 				<h2>Environment Manager</h2>
 			</div>
 			<div class="panel-body">
+				<div class="form-inline filtros">
+					<select class="form-control ordenar" id="ordenar">
+						<option value="*" class="ordenar-temporal">Ordenar por...</option>
+						<option value="fecha">Fecha</option>
+						<option value="proyecto">Proyecto</option>
+					</select>
+					<label for="filtro">Filtro</label>
+					<input class="form-control" type="text" id="filtro" name="filtro">
+					<button class="btn btn-primary" id="filtrar">Filtrar</input>
+				</div>
 				<div class="table-container">
 				</div>
 			</div>

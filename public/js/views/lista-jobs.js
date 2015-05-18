@@ -4,12 +4,25 @@ EnvMan.Views.ListaJobs = Backbone.View.extend({
 
 		this.template = swig.compile( $('#lista-job-template').html());
 		this.listenTo(collections.jobs, 'reset', this.render, this);
+
+		var config = {};
+		config.headers = [];
+		config.headers.push("Fecha");
+		config.headers.push("Job");
+		config.headers.push("Proyecto");
+		config.headers.push("Descripcion");
+		this.table = MyTable(config);
+		this.table.setHeight(350);
+
 	},
 
 	events : {
 
 		"click #agregar" : "agregar",
-		"click .link-job" : "mostrarJob"
+		"click .link-job" : "mostrarJob",
+		"change #ordenar" : "ordenar",
+		"keydown #filtro" : "filtrar",
+		"click #filtrar" : "filtrar"	
 
 	},
 
@@ -50,15 +63,126 @@ EnvMan.Views.ListaJobs = Backbone.View.extend({
 
 	},
 
-	render : function () {
+	ordenar : function (e) {
 
-		var config = {};
-		config.headers = [];
-		config.headers.push("Job");
-		config.headers.push("Proyecto");
-		config.headers.push("Descripcion");
-		var table = MyTable(config);
-		table.setHeight(400);
+		var ordenarPor = this.$el.find('#ordenar').val();
+		this.$el.find('#ordenar .ordenar-temporal').remove();
+
+		switch (ordenarPor)
+		{
+			case 'fecha':
+
+				var tmpJobArray = collections.jobs.toJSON();
+				tmpJobArray = _.sortBy(tmpJobArray, function (o) {
+
+					return o.fecha || Date.now();
+
+				});
+
+				var arrayData = [];
+				for (var index in tmpJobArray) {
+
+					arrayData.push(this.cargarJobArray(tmpJobArray[index]));
+
+				}
+
+				this.table.setArrayData(arrayData);
+
+				break;
+
+			case 'proyecto':
+
+				var tmpJobArray = collections.jobs.toJSON();
+				tmpJobArray = _.sortBy(tmpJobArray, function (o) {
+
+					return o.proyecto;
+
+				});
+
+				var arrayData = [];
+				for (var index in tmpJobArray) {
+
+					arrayData.push(this.cargarJobArray(tmpJobArray[index]));
+
+				}
+
+				this.table.setArrayData(arrayData);
+
+				break;
+		}
+
+	},
+
+	filtrar : function () {
+
+		var filtro = this.$el.find('#filtro').val();
+		console.log(filtro);
+		var ordenarPor = this.$el.find('#ordenar').val();
+		this.$el.find('#ordenar .ordenar-temporal').remove();
+
+		switch (ordenarPor)
+		{
+			case 'fecha':
+
+				var tmpJobArray = collections.jobs.toJSON();
+				tmpJobArray = _.sortBy(tmpJobArray, function (o) {
+
+					return o.fecha || Date.now();
+
+				});
+
+				var arrayData = [];
+				for (var index in tmpJobArray) {
+
+					var fecha = new Date(tmpJobArray[index].fecha || Date.now()).getYYYYMMDD();
+					if (fecha.indexOf(filtro) >= 0)
+						arrayData.push(this.cargarJobArray(tmpJobArray[index]));
+
+				}
+
+				this.table.setArrayData(arrayData);
+
+				break;
+
+			case 'proyecto':
+
+				var tmpJobArray = collections.jobs.toJSON();
+				tmpJobArray = _.sortBy(tmpJobArray, function (o) {
+
+					return o.proyecto;
+
+				});
+
+				var arrayData = [];
+				for (var index in tmpJobArray) {
+
+					var proyecto = tmpJobArray[index].proyecto;
+					if (proyecto.indexOf(filtro) >= 0)
+						arrayData.push(this.cargarJobArray(tmpJobArray[index]));
+
+				}
+
+				this.table.setArrayData(arrayData);
+
+				break;
+		}
+
+	},
+
+	cargarJobArray : function (data) {
+
+		var arrayData = {};
+
+		arrayData.Fecha = new Date(data.fecha || Date.now()).getYYYYMMDD();
+		arrayData.Job = '<a href="#" class="link-job" job="'+ data.job +'">' + data.job + '</a>';
+		arrayData.Proyecto = data.proyecto;
+		arrayData.Descripcion = data.descripcion;
+
+		return arrayData;
+
+	},
+
+	render : function () {
 
 		var self = this;
 		var xhr = collections.jobs.fetch();
@@ -71,16 +195,17 @@ EnvMan.Views.ListaJobs = Backbone.View.extend({
 			for (var index in tmpJobArray) {
 
 				var data = {};
+				data.Fecha = new Date(tmpJobArray[index].fecha || Date.now()).getYYYYMMDD();
 				data.Job = '<a href="#" class="link-job" job="'+ tmpJobArray[index].job +'">' + tmpJobArray[index].job + '</a>';
 				data.Proyecto = tmpJobArray[index].proyecto;
 				data.Descripcion = tmpJobArray[index].descripcion;
 				arrayData.push(data);
 			}
 
-			table.setArrayData(arrayData);
+			self.table.setArrayData(arrayData);
 
 			self.$el.html(self.template());
-			self.$el.find('.table-container').append(table);
+			self.$el.find('.table-container').append(self.table);
 
 		});
 		
