@@ -221,7 +221,7 @@ function generarScript(nroJob) {
 
 				if (job.registros[tabla][registro].MOD == undefined)
 					script += generarComando('insert', tabla, job.registros[tabla][registro]) + "\n";
-				else
+				else if (job.registros[tabla][registro].IDN)
 					script += generarComando('update',tabla, job.registros[tabla][registro]) + "\n";
 
 			}

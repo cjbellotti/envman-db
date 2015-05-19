@@ -55,6 +55,8 @@ function verificarReg(tabla, reg) {
 			}
 
 		}
+		if (modificar && ret.ID != registro.ID)
+			ret.IDN = registro.ID;
 
 	}
 

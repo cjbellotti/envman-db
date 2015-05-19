@@ -98,23 +98,16 @@ EnvMan.Views.ImportarArchivo = Backbone.View.extend({
 		reader.onload = function(e) {
 			var rows=e.target.result.split("\n");
 
-			var objeto = {};
-			for(var indexRow = 0; indexRow < rows.length-1; indexRow++)
-			{
+			var data = expandImport(e.target.result);
 
-				var columns = rows[indexRow].split(";");
-				var nombreTabla=columns[0];
+			for (var tabla in data) {
 
-				objeto = {};
-				var index = 0;
-				for (var indexField in tablas[nombreTabla].fields) {
-					index++;
-					for (var field in tablas[nombreTabla].fields[indexField])
-						objeto[field] = tablas[nombreTabla].fields[indexField][field](columns[index]);
+				for (var index in data[tabla]) {
+
+					tablas[tabla].agregar(data[tabla][index]);
+
 				}
-
-				tablas[nombreTabla].agregar(objeto);
-
+				
 			}
 
 			$.ajax({

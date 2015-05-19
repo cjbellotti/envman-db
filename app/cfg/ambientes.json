@@ -1,9 +1,21 @@
 {
 
-	"DESA" : {},
-	"IST" : {},
-	"UAT" : {},
-	"QAM" : {},
-	"PROD" : {}
+	"DESA" : [
+		"hostdesa"
+	],
+	"IST" : [
+		"hostist"
+	],
+	"UAT" : [
+		"hostuat"
+	],
+	"QAM" : [
+		"hostqam"
+	],
+	"PROD" : [
+		"hostprodsync",
+		"hostprodasync",
+		"hostprodcobro"
+	]
 
 }
