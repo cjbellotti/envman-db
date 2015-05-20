@@ -1,21 +1,42 @@
 {
 
 	"DESA" : [
-		"hostdesa"
+		{ 
+			"nombre" : "DESA",
+			"url" : "hostdesa"
+		}
 	],
 	"IST" : [
-		"hostist"
+		{
+			"nombre" : "IST",
+			"url" : "hostist"
+		}
 	],
 	"UAT" : [
-		"hostuat"
+		{
+			"nombre" : "UAT",
+			"url" : "hostuat"
+		}
 	],
 	"QAM" : [
-		"hostqam"
+		{
+			"nombre" : "QAM",
+			"url" : "hostqam"
+		}
 	],
 	"PROD" : [
-		"hostprodsync",
-		"hostprodasync",
-		"hostprodcobro"
+		{
+			"nombre" : "SYNC",
+			"url" : "hostprodsync"
+		},
+		{	
+			"nombre" : "ASYNC",
+			"url" : "hostprodasync"
+		},
+		{
+			"nombre" : "COBRO",
+			"url" : "hostprodcobro"
+		}
 	]
 
 }

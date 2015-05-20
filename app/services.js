@@ -243,9 +243,6 @@ function definirServicioJob () {
 	app.get('/generar-script/:job', function (req, res) {
 
 		var result = generarScript(req.params.job);
-		//var nombreArchivo = __dirname + '/temp/'+ req.params.job+'.sql';
-		//fs.writeFileSync(nombreArchivo, result, 'utf8');
-		//res.sendFile(nombreArchivo);
 		res.json(result)
 			.end();
 
@@ -255,9 +252,6 @@ function definirServicioJob () {
 	app.post('/generar-script', function (req, res) {
 
 		var result = generarScript(req.body);
-		//var nombreArchivo = __dirname + '/temp/'+ req.params.job+'.sql';
-		//fs.writeFileSync(nombreArchivo, result, 'utf8');
-		//res.sendFile(nombreArchivo);
 		res.json(result)
 			.end();
 

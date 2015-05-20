@@ -4,23 +4,33 @@ function cargarExistentes(tablas, input) {
 
 		var data = input[index];
 
-		var registro = window.collections.entidades.findWhere({
+		var index = _.findIndex(tablas['DVM_ENTIDAD_CANONICA'].registros,{
 
 			NOMBRE : data.nombreEntidad
 
 		});
 
-		if (registro) {
+		if (index < 0 ) {
 
-			registro = registro.toJSON();
+			var registro = window.collections.entidades.findWhere({
 
-			tablas['DVM_ENTIDAD_CANONICA'].registros.push(registro);
+				NOMBRE : data.nombreEntidad
 
-			idEntidad = registro.ID;
+			});
 
-			if (tablas['DVM_ENTIDAD_CANONICA'].id < idEntidad) {
+			if (registro) {
 
-				tablas['DVM_ENTIDAD_CANONICA'].id = idEntidad;
+				registro = registro.toJSON();
+
+				tablas['DVM_ENTIDAD_CANONICA'].registros.push(registro);
+
+				idEntidad = registro.ID;
+
+				if (tablas['DVM_ENTIDAD_CANONICA'].id < idEntidad) {
+
+					tablas['DVM_ENTIDAD_CANONICA'].id = idEntidad;
+
+				}
 
 			}
 
@@ -34,54 +44,75 @@ function cargarExistentes(tablas, input) {
 			var idValorCanonico = 0;
 			var idValorSistema = 0;
 
-			var registro = window.collections.sistemas.findWhere({
+			index = _.findIndex(tablas['DVM_SISTEMA'].registros, {
 
 				NOMBRE : data.nombreSistema,
 				PAIS : pais 
-
+	
 			});
 
-			if (registro) {
+			if (index < 0) {
+			
+				var registro = window.collections.sistemas.findWhere({
 
-				registro = registro.toJSON();
+					NOMBRE : data.nombreSistema,
+					PAIS : pais 
 
-				tablas['DVM_SISTEMA'].registros.push(registro);
+				});
 
-				idSistema = registro.ID;
+				if (registro) {
 
-				if (tablas['DVM_SISTEMA'].id < idSistema) {
+					registro = registro.toJSON();
 
-					tablas['DVM_SISTEMA'].id = idSistema;
+					tablas['DVM_SISTEMA'].registros.push(registro);
+
+					idSistema = registro.ID;
+
+					if (tablas['DVM_SISTEMA'].id < idSistema) {
+
+						tablas['DVM_SISTEMA'].id = idSistema;
+
+					}
 
 				}
 
 			}
 
-			var registro = window.collections.valoresCanonicos.findWhere({
+			index = _.findIndex(tablas['DVM_VALOR_CANONICO'].registros, {
 
 				ID_ENTIDAD_CANONICA : idEntidad,
-				VALOR_CANONICO : data.valorCanonico 
-
+				VALOR_CANONICO : data.valorCanonico
+ 
 			});
 
-			if (registro) {
+			if (index < 0) {
 
-				registro = registro.toJSON();
+				var registro = window.collections.valoresCanonicos.findWhere({
 
-				tablas['DVM_VALOR_CANONICO'].registros.push(registro);
+					ID_ENTIDAD_CANONICA : idEntidad,
+					VALOR_CANONICO : data.valorCanonico 
 
-				idValorCanonico = registro.ID;
+				});
 
-				if (tablas['DVM_VALOR_CANONICO'].id < idValorCanonico) {
+				if (registro) {
 
-					tablas['DVM_VALOR_CANONICO'].id = dValorCanonico;
+					registro = registro.toJSON();
+
+					tablas['DVM_VALOR_CANONICO'].registros.push(registro);
+
+					idValorCanonico = registro.ID;
+
+					if (tablas['DVM_VALOR_CANONICO'].id < idValorCanonico) {
+
+						tablas['DVM_VALOR_CANONICO'].id = dValorCanonico;
+
+					}
 
 				}
 
 			}
 
-
-			registro = window.collections.valoresSistema.findWhere({
+			index = _.findIndex(tablas['DVM_VALOR_SISTEMA'].registros, {
 
 				ID_ENTIDAD_CANONICA : idEntidad,
 				ID_VALOR_CANONICO : idValorCanonico,
@@ -90,18 +121,31 @@ function cargarExistentes(tablas, input) {
 
 			});
 
+			if (index < 0) {
 
-			if (registro) {
+				registro = window.collections.valoresSistema.findWhere({
 
-				registro = registro.toJSON();
+					ID_ENTIDAD_CANONICA : idEntidad,
+					ID_VALOR_CANONICO : idValorCanonico,
+					ID_SISTEMA : idSistema,
+					VALOR_SISTEMA : data.valorSistema
 
-				tablas['DVM_VALOR_SISTEMA'].registros.push(registro);
+				});
 
-				idValorSistema = registro.ID;
 
-				if (tablas['DVM_VALOR_SISTEMA'].id < idValorSistema) {
+				if (registro) {
 
-					tablas['DVM_VALOR_SISTEMA'].id = idValorSistema;
+					registro = registro.toJSON();
+
+					tablas['DVM_VALOR_SISTEMA'].registros.push(registro);
+
+					idValorSistema = registro.ID;
+
+					if (tablas['DVM_VALOR_SISTEMA'].id < idValorSistema) {
+
+						tablas['DVM_VALOR_SISTEMA'].id = idValorSistema;
+
+					}
 
 				}
 

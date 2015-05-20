@@ -51,6 +51,7 @@ function verificarJob(nroJob) {
 
 	}
 
+	// TODO : Aqui debemos iterar por todos datacenters que haya por ambiente
 	if (job) {
 
 		result = job.registros;
