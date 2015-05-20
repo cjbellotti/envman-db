@@ -105,12 +105,14 @@ EnvMan.Views.ImportarArchivo = Backbone.View.extend({
 				for (var index in data[tabla]) {
 
 					tablas[tabla].agregar(data[tabla][index]);
+					var model = new tablas[tabla].model(data[tabla][index]);
+					tablas[tabla].collection.set(model, { remove : false });
 
 				}
 				
 			}
 
-			$.ajax({
+			/*$.ajax({
 				url : '/verificar',
 				method : 'POST',
 				contentType : 'application/json',
@@ -142,7 +144,7 @@ EnvMan.Views.ImportarArchivo = Backbone.View.extend({
 					window.generales.limpiarRegistros(window.job.registros);
 
 				}
-			});
+			});*/
 
 		}
 		reader.readAsText($('#archivo:file')[0].files[0]);

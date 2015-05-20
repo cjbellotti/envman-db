@@ -59,11 +59,21 @@ function expandImport(content) {
 					// TODO : Si existe el sistema en las collecciones utilizar el existente
 
 					var registro = {};
-					registro.ID = ++tablas['DVM_SISTEMA'].id;
-					registro.NOMBRE = nombreSistema;
-					registro.DESCRIPCION = 'Descripcion de ' + nombreSistema;
-					registro.PAIS = pais;
 
+					if (sistemaExistente) {
+
+						registro = sistemaExistente.toJSON();
+						if (registro.ID > tablas['DVM_SISTEMA'].id)
+							tablas['DVM_SISTEMA'].id = registro.ID;
+
+					} else {
+
+						registro.ID = ++tablas['DVM_SISTEMA'].id;
+						registro.NOMBRE = nombreSistema;
+						registro.DESCRIPCION = 'Descripcion de ' + nombreSistema;
+						registro.PAIS = pais;
+
+					}
 					tablas['DVM_SISTEMA'].registros.push(registro);
 					idSistema = registro.ID;
 
@@ -81,12 +91,22 @@ function expandImport(content) {
 						NOMBRE : nombreEntidad
 					});
 
-					// TODO : Si existe la entidad en las collecciones utilizar la existente
-
 					var registro = {};
-					registro.ID = ++tablas['DVM_ENTIDAD_CANONICA'].id;
-					registro.NOMBRE = nombreEntidad;
-					registro.DESCRIPCION = 'Descripcion de ' + nombreEntidad;
+
+					// TODO : Si existe la entidad en las collecciones utilizar la existente
+					if (entidadExistente) {
+
+						registro = entidadExistente.toJSON();
+						if (registro.ID > tablas['DVM_ENTIDAD_CANONICA'].id)
+							tablas['DVM_ENTIDAD_CANONICA'].id = registro.ID;						
+
+					} else {
+
+						registro.ID = ++tablas['DVM_ENTIDAD_CANONICA'].id;
+						registro.NOMBRE = nombreEntidad;
+						registro.DESCRIPCION = 'Descripcion de ' + nombreEntidad;
+
+					}
 
 					tablas['DVM_ENTIDAD_CANONICA'].registros.push(registro);
 					idEntidad = registro.ID;
@@ -105,12 +125,29 @@ function expandImport(content) {
 				var idValorCanonico = 0;
 				if (valorCanonicoIndex < 0) {
 
-					var registro = {};
-					registro.ID = ++tablas['DVM_VALOR_CANONICO'].id;
-					registro.ID_ENTIDAD_CANONICA = idEntidad;
-					registro.DESCRIPCION = 'Descripcion de ' + valorCanonico;
-					registro.VALOR_CANONICO = valorCanonico;
+					var valorCanonicoExistente = window.collections.valoresCanonicos.findWhere({
 
+						ID_ENTIDAD_CANONICA : idEntidad,
+						VALOR_CANONICO : valorCanonico 
+
+					});
+
+					var registro = {};
+
+					if (valorCanonicoExistente) {
+
+						registro = valorCanonicoExistente.toJON();
+						if (registro.id > tablas['DVM_VALOR_CANONICO'].id)
+							tablas['DVM_VALOR_CANONICO'].id = registro.ID;
+
+					} else {
+
+						registro.ID = ++tablas['DVM_VALOR_CANONICO'].id;
+						registro.ID_ENTIDAD_CANONICA = idEntidad;
+						registro.DESCRIPCION = 'Descripcion de ' + valorCanonico;
+						registro.VALOR_CANONICO = valorCanonico;
+
+					}
 					tablas['DVM_VALOR_CANONICO'].registros.push(registro);
 					idValorCanonico = registro.ID;
 
@@ -130,13 +167,31 @@ function expandImport(content) {
 				var idValorSistema = 0;
 				if (valorSistemaIndex < 0) {
 
-					var registro = {};
-					registro.ID = ++tablas['DVM_VALOR_CANONICO'].id;
-					registro.ID_SISTEMA = idSistema;
-					registro.ID_ENTIDAD_CANONICA = idEntidad;
-					registro.ID_VALOR_CANONICO = idValorCanonico;
-					registro.VALOR_SISTEMA = valorSistema;
+					var valorSistemaExistente = window.collections.valoresSistema.findWhere({
 
+						ID_ENTIDAD_CANONICA : idEntidad,
+						ID_VALOR_CANONICO : idValorCanonico,
+						ID_SISTEMA : idSistema,
+						VALOR_SISTEMA : valorSistema
+
+					});
+
+					if (valorSistemaExistente) {
+
+						registro = valorSistemaExistente.toJSON();
+						if (registro.ID > tablas['DVM_VALOR_SISTEMA'].id)
+							tablas['DVM_VALOR_SISTEMA'].id = registro.ID;
+
+					} else {
+
+						var registro = {};
+						registro.ID = ++tablas['DVM_VALOR_SISTEMA'].id;
+						registro.ID_SISTEMA = idSistema;
+						registro.ID_ENTIDAD_CANONICA = idEntidad;
+						registro.ID_VALOR_CANONICO = idValorCanonico;
+						registro.VALOR_SISTEMA = valorSistema;
+
+					}
 					tablas['DVM_VALOR_SISTEMA'].registros.push(registro);
 					idValorSistema = registro.ID;
 
