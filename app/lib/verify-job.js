@@ -11,25 +11,34 @@ var verificaciones = [];
 for (var key in ambientes) {
 
 	tables[key] = {};
-	tables[key].entidadcanonica = require('../tables/entidad-canonica')(ambientes[key]);
-	tables[key].sistema = require('../tables/sistema')(ambientes[key]);
-	tables[key].valorcanonico = require('../tables/valor-canonico')(ambientes[key]);
-	tables[key].valorsistema = require('../tables/valor-sistema')(ambientes[key]);
+	for (var indexdc in ambientes[key]) {
+
+			var dc = ambientes[key][indexdc];
+			tables[key][dc.nombre] = {};
+			tables[key][dc.nombre].entidadcanonica = require('../tables/entidad-canonica')(dc);
+			tables[key][dc.nombre].sistema = require('../tables/sistema')(dc);
+			tables[key][dc.nombre].valorcanonico = require('../tables/valor-canonico')(dc);
+			tables[key][dc.nombre].valorsistema = require('../tables/valor-sistema')(dc);
+
+	}
 
 }
 
 fs.readdir(__dirname + '/verifications', function (err, files) {
 
 	if (err) throw err;
-
+	
 	console.log('Verificaciones:');
 	files.forEach(function (file) {
-		if(file.indexOf('.js') > 0) {
+
+		var validacionNombreArchivo = /^[A-Za-z0-9\-]+\.js$/g;
+		if(validacionNombreArchivo.exec(file) != null) {
 
 			console.log('\t - ' + file);
 			verificaciones.push(require(__dirname + '/verifications/' + file));
 
 		}
+
 	});
 
 });
@@ -51,16 +60,19 @@ function verificarJob(nroJob) {
 
 	}
 
-	// TODO : Aqui debemos iterar por todos datacenters que haya por ambiente
 	if (job) {
 
-		result = job.registros;
+		result = {};
+		for (var dc in tables[job.target]) {
 
-		var tabla = tables[job.target];
+				result[dc] = job.registros;
+				var tabla = tables[job.target][dc];
 
-		for (var indexVerificacion in verificaciones) {
+				for (var indexVerificacion in verificaciones) {
 
-			result = verificaciones[indexVerificacion](tabla,  result);
+					result[dc] = verificaciones[indexVerificacion](tabla,  result[dc]);
+
+				}
 
 		}
 

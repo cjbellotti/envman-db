@@ -1,1 +1,1 @@
-update {{ %TABLA% }} set ({{ %VALORES% }}) where {{ %IGUALDAD% }};
+update {{ TABLA }} set ({{ VALORES }}) where {{ IGUALDAD }};
