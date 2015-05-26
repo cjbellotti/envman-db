@@ -3,7 +3,8 @@ var app = require('express')(),
 	fs = require('fs'),
 	manageJob = require('./tables/job'),
 	verifyJob = require('./lib/verify-job'),
-	generarScript = require('./lib/generar-script-dvm-v2');
+	//generarScript = require('./lib/generar-script-dvm-v2');
+	generarScript = require('./lib/generar-script-dvm-v3');
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());

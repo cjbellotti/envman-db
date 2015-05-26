@@ -12,6 +12,7 @@ EnvMan.Views.VerificarJob = Backbone.View.extend({
 
 		var config = {}
 		config.headers = [];
+		config.headers.push("DC");
 		config.headers.push("Tipo");
 		config.headers.push("Descripcion");
 		config.headers.push("Accion");
@@ -36,11 +37,11 @@ EnvMan.Views.VerificarJob = Backbone.View.extend({
 			success : function (data) {
 				console.log(data);
 
-				var view = new EnvMan.Views.VerScript();
+				var view = new EnvMan.Views.VerScript(data);
 				$('#modals').append(view.el);
 				view.render();
-				view.$el.find('#despliegue').html(data.despliegue);
-				view.$el.find('#rollback').html(data.rollback);
+				//view.$el.find('#despliegue').html(data.despliegue);
+				//view.$el.find('#rollback').html(data.rollback);
 				view.$el.modal({
 					backdrop : 'static',
 					keyboard : false
@@ -57,7 +58,6 @@ EnvMan.Views.VerificarJob = Backbone.View.extend({
 
 		var self = this;
 		window.generales.limpiarRegistros(window.job.registros);
-		//$.post('/verificar/' + window.job.job, function (data) {
 		$.ajax({
 			method : 'POST',
 			url : '/verificar', 
@@ -67,30 +67,35 @@ EnvMan.Views.VerificarJob = Backbone.View.extend({
 
 			self.datos = data;
 
-			var arrayData = [];
-			for (var tabla in data) {
+					var arrayData = [];
+					for (var dc in data) {
+							for (var tabla in data[dc]) {
 
-				for (var index in data[tabla]) {
+								for (var index in data[dc][tabla]) {
 
-					var registro = {};
-					registro.Tipo = tabla;
-					registro.Accion = (data[tabla][index].MOD) ? "Update" : "Insert";
-					registro.Descripcion = "";
+									var registro = {};
+									registro.DC = dc;
+									registro.Tipo = tabla;
+									registro.Accion = (data[dc][tabla][index].MOD) ? "Update" : "Insert";
+									registro.Descripcion = "";
 
-					for (var field in data[tabla][index]) {
-						if (field != "MOD" && field != "IDN" && field != 'origenReg') {
-							registro.Descripcion += field + " : " + data[tabla][index][field] + " - ";
-						}
+									for (var field in data[dc][tabla][index]) {
+										if (field != "MOD" && field != "IDN" && field != 'origenReg') {
+											registro.Descripcion += field + " : " + data[dc][tabla][index][field] + " - ";
+										}
+									}
+									arrayData.push(registro);
+
+								}
+
+							}
+
 					}
-					arrayData.push(registro);
 
-				}
+					self.table.setArrayData(arrayData);
+
 			}
-
-			self.table.setArrayData(arrayData);
-
-		//});
-		}});
+		});
 
 		this.$el.html(this.template());
 		this.$el.find('.table-content').append(this.table);

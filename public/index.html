@@ -80,6 +80,13 @@
 			width : 20%;
 		}
 
+		.tab-script-content {
+
+			width : 100%;
+			height : 250px;
+
+		}
+
  	</style>
 	
 </head>
@@ -142,7 +149,8 @@
 	<script src="js/views/valor-sistema-importar.js"></script>	
 	<script src="js/views/lista-jobs.js"></script>	
 	<script src="js/views/verificar-job.js"></script>	
-	<script src="js/views/ver-script.js"></script>	
+	<script src="js/views/ver-script-v2.js"></script>
+	<script src="js/views/script.js"></script>	
 	<script src="js/views/vista-importar.js"></script>	
 
 	<!-- Preparacion -->
@@ -631,6 +639,15 @@
 					<button id="cancelar" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
 				</div>
 			</div>
+		</div>
+	</script>
+
+	<script type="text/template" id="script-template">
+		<ul class="nav nav-tabs">
+		</ul>
+		<div class="tab-script-content">
+			<textarea class="form-control script-ta" style="width: 100%; height : 250px">
+			</textarea>
 		</div>
 	</script>
 
