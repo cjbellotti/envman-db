@@ -3,39 +3,67 @@
 	"DESA" : [
 		{ 
 			"nombre" : "DESA",
-			"url" : "hostdesa"
+			"hostname" : "localhost",
+			"port" : 1521,
+			"db" : "XE",
+			"username" : "TESTORA",
+			"password" : "12345678"
 		}
 	],
 	"IST" : [
 		{
 			"nombre" : "IST",
-			"url" : "hostist"
+			"hostname" : "localhost",
+			"port" : 1521,
+			"db" : "XE",
+			"username" : "TESTORA",
+			"password" : "12345678"
 		}
 	],
 	"UAT" : [
 		{
 			"nombre" : "UAT",
-			"url" : "hostuat"
+			"hostname" : "localhost",
+			"port" : 1521,
+			"db" : "XE",
+			"username" : "TESTORA",
+			"password" : "12345678"
 		}
 	],
 	"QAM" : [
 		{
 			"nombre" : "QAM",
-			"url" : "hostqam"
+			"hostname" : "localhost",
+			"port" : 1521,
+			"db" : "XE",
+			"username" : "TESTORA",
+			"password" : "12345678"
 		}
 	],
 	"PROD" : [
 		{
-			"nombre" : "SYNC",
-			"url" : "hostprodsync"
+			"nombre" : "DC_AR",
+			"hostname" : "localhost",
+			"port" : 1521,
+			"db" : "XE",
+			"username" : "TESTORA",
+			"password" : "12345678"
 		},
 		{	
-			"nombre" : "ASYNC",
-			"url" : "hostprodasync"
+			"nombre" : "DC_VE",
+			"hostname" : "localhost",
+			"port" : 1521,
+			"db" : "XE",
+			"username" : "TESTORA",
+			"password" : "12345678"
 		},
 		{
-			"nombre" : "COBRO",
-			"url" : "hostprodcobro"
+			"nombre" : "DC_CO",
+			"hostname" : "localhost",
+			"port" : 1521,
+			"db" : "XE",
+			"username" : "TESTORA",
+			"password" : "12345678"
 		}
 	]
 
